@@ -4,7 +4,7 @@ is a easy to use open source implementation of the ZUGFeRD data model including 
 
 ## Features 
  - Easy and understandable API to create and read invoices.
- - Extensive documented API and examples.
+ - Extensive documentation with examples.
  - Logical invoice validation done with JSR303
  - Validation of invoices against ZUGFeRD profiles.
  - Validation of invoices against specific country invoice regulations.
@@ -13,7 +13,7 @@ is a easy to use open source implementation of the ZUGFeRD data model including 
 
 ## Konik modules 
 
- - konik 			ZUGFeRD data model implementation. Makes is possible to read, create and validate invoices.
- - itext-carriage	The carriage combines Konik with iText. Allowing you to attach or extract invoices from or to PDF.
+ - ```Konik``` Contains the ZUGFeRD data model. 
+ - ```itext-carriage```	combines Konik with iText. This module allows you to attach or extract invoices from or to PDF.
 
 For more information please visit http://konik.io
