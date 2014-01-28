@@ -19,6 +19,7 @@
 	<modules>
 		<module>konik</module>
 		<module>itext-carriage</module>
+		<module>distribution</module>
 	</modules>
 
 	<name>Konik parent pom</name>
@@ -210,6 +211,12 @@
 					<artifactId>maven-checkstyle-plugin</artifactId>
 					<version>2.11</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.4</version>
+				</plugin>
+
 			</plugins>
 		</pluginManagement>
 
@@ -228,6 +235,8 @@
 					</signature>
 				</configuration>
 			</plugin>
+
+
 		</plugins>
 	</build>
 
