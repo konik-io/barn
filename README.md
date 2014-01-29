@@ -17,3 +17,6 @@ is a easy to use open source implementation of the ZUGFeRD data model including 
  - ```itext-carriage```	combines Konik with iText. This module allows you to attach or extract invoices from or to PDF.
 
 For more information please visit http://konik.io
+
+
+Continuous Integration: [![Build Status](http://ci.konik.io/job/konik/badge/icon)](http://ci.konik.io/job/konik/)
