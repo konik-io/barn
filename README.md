@@ -15,7 +15,7 @@ is a easy to use open source implementation of the ZUGFeRD data model including 
 
  - ```konik``` Contains the ZUGFeRD data model. 
  - ```itext-carriage```	Combines Konik with iText. Allows attaching or extracting XML invoices to PDF.
- - ```distribution``` Zip distribution package.
+ - ```distribution``` Zip distribution package. For those who are not using maven.
  - ```project``` content related to the project like Scripts, Formatting rules, dictionary.  (Not a Maven module). 
  
 
