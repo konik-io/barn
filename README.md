@@ -14,7 +14,7 @@ is a easy to use open source implementation of the ZUGFeRD data model including 
 ## Barn modules 
 
  - ```konik``` Contains the ZUGFeRD data model. 
- - ```itext-carriage```	combines Konik with iText. This module allows you to attach or extract invoices from or to PDF.
+ - ```itext-carriage```	Combines Konik with iText. Allows attaching or extracting XML invoices to PDF.
  - ```distribution``` Zip distribution package.
  - ```project``` content related to the project like Scripts, Formatting rules, dictionary.  (Not a Maven module). 
  
