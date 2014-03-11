@@ -22,4 +22,4 @@ is a easy to use open source implementation of the ZUGFeRD data model including 
 For more information please visit http://konik.io
 
 
-Continuous Integration: [![Build Status](http://ci.konik.io/job/konik/badge/icon)](http://ci.konik.io/job/konik/)
+Continuous Integration: [![Build Status](http://ci.konik.io/job/barn/badge/icon)](http://ci.konik.io/job/barn/)
