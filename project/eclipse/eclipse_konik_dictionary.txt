@@ -1,3 +1,7 @@
 konik
 vadim
 bauer
+maven
+metadata
+zip
+changelog
