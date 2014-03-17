@@ -29,9 +29,15 @@
          <artifactId>itext-pdfa</artifactId>
          <version>${itext.lib}</version>
       </dependency>
+      
+      <!-- Optional DI -->
+      <dependency>
+         <groupId>javax.inject</groupId>
+         <artifactId>javax.inject</artifactId>
+         <optional>true</optional>
+      </dependency>
 
       <!-- TEST dependencies -->
-
       <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>

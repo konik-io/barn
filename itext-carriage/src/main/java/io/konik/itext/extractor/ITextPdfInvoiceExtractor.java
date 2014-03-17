@@ -1,3 +1,20 @@
+/* Copyright (C) 2014 konik.io
+ *
+ * This file is part of the Konik library.
+ *
+ * The Konik library is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * The Konik library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with the Konik library. If not, see <http://www.gnu.org/licenses/>.
+ */
 package io.konik.itext.extractor;
 
 import static com.itextpdf.text.pdf.PdfName.EF;
@@ -12,6 +29,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -25,14 +44,22 @@ import com.itextpdf.text.pdf.PdfName;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStream;
 
+/**
+ * The Class iText Pdf Invoice Extractor.
+ * 
+ */
+@Named
+@Singleton
 public class ITextPdfInvoiceExtractor implements InvoiceExtractor {
 
-   private static PdfName AF = new PdfName("AF");
+   private final static PdfName AF = new PdfName("AF");
 
+   @Override
    public Invoice extract(byte[] pdfIn) {
       return extract(new ByteArrayInputStream(pdfIn));
    }
    
+   @Override
    public Invoice extract(InputStream pdfStream) {
          PdfReader reader = getPdfReader(pdfStream);
          PdfArray af = getValidAf(reader.getCatalog());
@@ -50,6 +77,29 @@ public class ITextPdfInvoiceExtractor implements InvoiceExtractor {
       }
    }
 
+   private PdfArray getValidAf(PdfDictionary catalog) {
+      if (catalog.contains(AF)) {
+         PdfArray af = catalog.getAsArray(AF);
+         if (!af.isEmpty() && af.getDirectObject(0).isDictionary())
+            return af;
+      }
+      throw new InvoiceExtractionError("Pdf catalog does not contain Valid AF Entry");
+   }
+   
+   private PdfDictionary getValidFileSpec(PdfArray af) {
+      if (af.isEmpty() || af.getAsDict(0) == null) {
+         throw new InvoiceExtractionError("Pdf does not contain a FileSpec Entry");
+      }
+      return af.getAsDict(0);
+   }
+   
+   private PdfDictionary getValidEf(PdfDictionary fileSpec) {
+      if (fileSpec.contains(EF)) {
+         return fileSpec.getAsDict(EF);
+      }
+      throw new InvoiceExtractionError("Pdf catalog does not contain Valid EF Entry");
+   }
+
    private byte[] getFStream(PdfDictionary ef){
       if (ef.contains(F)) {
          PdfStream xmlStream = ef.getAsStream(F);
@@ -62,32 +112,7 @@ public class ITextPdfInvoiceExtractor implements InvoiceExtractor {
       throw new InvoiceExtractionError("Pdf catalog does not contain Valid F Entry");
    }
    
-
-
-   private PdfDictionary getValidEf(PdfDictionary fileSpec) {
-      if (fileSpec.contains(EF)) {
-         return fileSpec.getAsDict(EF);
-      }
-      throw new InvoiceExtractionError("Pdf catalog does not contain Valid EF Entry");
-   }
-
-   private PdfDictionary getValidFileSpec(PdfArray af) {
-      if (af.isEmpty() || af.getAsDict(0) == null) {
-         throw new InvoiceExtractionError("Pdf does not contain a FileSpec Entry");
-      }
-      return af.getAsDict(0);
-   }
-
-   private PdfArray getValidAf(PdfDictionary catalog) {
-      if (catalog.contains(AF)) {
-         PdfArray af = catalog.getAsArray(AF);
-         if (!af.isEmpty() && af.getDirectObject(0).isDictionary())
-            return af;
-      }
-      throw new InvoiceExtractionError("Pdf catalog does not contain Valid AF Entry");
-   }
-   
-   public static Invoice covertToObjectModel(byte[] xmlContent){
+   static Invoice covertToObjectModel(byte[] xmlContent){
       try {
          Unmarshaller unmarshaller = newInstance("io.konik.zugferd").createUnmarshaller();
          Source s = new StreamSource(new ByteArrayInputStream(xmlContent));

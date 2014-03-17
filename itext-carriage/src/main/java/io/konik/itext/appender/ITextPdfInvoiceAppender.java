@@ -21,7 +21,7 @@ import static com.itextpdf.text.pdf.AFRelationshipValue.Alternative;
 import static com.itextpdf.text.pdf.PdfName.AFRELATIONSHIP;
 import static com.itextpdf.text.pdf.PdfName.MODDATE;
 import static com.itextpdf.text.pdf.PdfName.PARAMS;
-import io.konik.InvoiceHandler;
+import io.konik.InvoiceTransformer;
 import io.konik.harness.InvoiceAppendError;
 import io.konik.harness.InvoiceAppender;
 import io.konik.zugferd.Invoice;
@@ -31,6 +31,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfAConformanceLevel;
@@ -43,11 +46,13 @@ import com.itextpdf.text.pdf.PdfName;
 import com.itextpdf.text.pdf.PdfReader;
 
 /**
- * The Class IText Pdf Invoice Appender.
+ * The Class IText PDF Invoice Appender.
  *
- * We expect a PDF following the  PDF/A-3B specification.
+ * For now we expect a compliant PDF/A-3B.
  *
  */
+@Named
+@Singleton
 public class ITextPdfInvoiceAppender implements InvoiceAppender {
 
 	private static final String ZF_NAME = "ZUGFeRD-invoice.xml";
@@ -96,7 +101,7 @@ public class ITextPdfInvoiceAppender implements InvoiceAppender {
 	 */
 	private void appendInvoiceIntern(Invoice invoice, InputStream inPdf, OutputStream output) throws IOException, DocumentException {
 
-		byte[] content = InvoiceHandler.marshall(invoice);
+		byte[] content = InvoiceTransformer.from(invoice);
 
 		PdfReader reader = new PdfReader(inPdf);
 		PdfAStamper stamper = new PdfAStamper(reader, output, PdfAConformanceLevel.PDF_A_3B);
@@ -119,10 +124,4 @@ public class ITextPdfInvoiceAppender implements InvoiceAppender {
 		stamper.close();
 		reader.close();
 	}
-
-
-
-
-
-
 }

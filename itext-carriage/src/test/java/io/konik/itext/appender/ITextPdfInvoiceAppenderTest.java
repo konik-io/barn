@@ -1,13 +1,29 @@
+/* Copyright (C) 2014 konik.io
+ *
+ * This file is part of the Konik library.
+ *
+ * The Konik library is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * The Konik library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with the Konik library. If not, see <http://www.gnu.org/licenses/>.
+ */
 package io.konik.itext.appender;
 
 import static org.apache.commons.io.IOUtils.toByteArray;
 import static org.assertj.core.api.Assertions.assertThat;
-import io.konik.InvoiceHandler;
+import io.konik.InvoiceTransformer;
 import io.konik.harness.InvoiceAppender;
 import io.konik.zugferd.Invoice;
 
 import java.io.InputStream;
-import java.nio.charset.Charset;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +33,8 @@ public class ITextPdfInvoiceAppenderTest {
    InvoiceAppender appender;
    InputStream isPdf;
    InputStream isXml;
-
+   InvoiceTransformer transformer = new InvoiceTransformer();
+   
    @Before
    public void setUp() throws Exception {
       appender = new ITextPdfInvoiceAppender();
@@ -27,15 +44,17 @@ public class ITextPdfInvoiceAppenderTest {
 
    @Test
    public void appendInputStream() throws Exception {
-      Invoice invoice = InvoiceHandler.unmarshall(isXml);
+      Invoice invoice = transformer.from(isXml);
       byte[] pdfInput = toByteArray(isPdf);
       byte[] outPdf = appender.append(invoice, pdfInput);
       assertThat(outPdf).isNotNull();
+
+//      FileUtils.writeByteArrayToFile(new File("acme_invoice-42.pdf"), outPdf);
    }
 
    @Test
    public void appendByteArray() throws Exception {
-      Invoice invoice = InvoiceHandler.unmarshall(isXml);
+      Invoice invoice = transformer.from(isXml);
       byte[] outPdf = appender.append(invoice, toByteArray(isPdf));
       assertThat(outPdf).isNotNull();
    }
