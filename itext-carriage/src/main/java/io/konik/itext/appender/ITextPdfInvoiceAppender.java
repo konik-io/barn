@@ -22,8 +22,12 @@ import static com.itextpdf.text.pdf.PdfName.AFRELATIONSHIP;
 import static com.itextpdf.text.pdf.PdfName.MODDATE;
 import static com.itextpdf.text.pdf.PdfName.PARAMS;
 import io.konik.InvoiceTransformer;
+import io.konik.exception.TransformationWarning;
 import io.konik.harness.InvoiceAppendError;
 import io.konik.harness.InvoiceAppender;
+import io.konik.invoice.profiles.InvoiceProfile;
+import io.konik.itext.xmp.XmpAppender;
+import io.konik.itext.xmp.ZfXmpInfo;
 import io.konik.zugferd.Invoice;
 
 import java.io.ByteArrayInputStream;
@@ -32,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -55,75 +60,101 @@ import com.itextpdf.text.pdf.PdfReader;
 @Singleton
 public class ITextPdfInvoiceAppender implements InvoiceAppender {
 
-	private static final String ZF_NAME = "ZUGFeRD-invoice.xml";
+   private static final String INVOICE = "INVOICE";
 
-	/**
-	 * Append invoice.
-	 *
-	 * @param invoice the invoice
-	 * @param pdf the in PDF byte array
-	 * @return the byte[]
-	 */
-	public byte[] append(Invoice invoice, byte[] pdf)  {
-		ByteArrayInputStream isPdf = new ByteArrayInputStream(pdf);
-		ByteArrayOutputStream osPdf = new ByteArrayOutputStream(pdf.length);
+   private static final String ZF_FILE_NAME = "ZUGFeRD-invoice.xml";
 
-		append(invoice, isPdf,osPdf);
+   private final XmpAppender xmp;
 
-		return osPdf.toByteArray();
-	}
+   public ITextPdfInvoiceAppender() {
+      this(new XmpAppender());
+   }
+   
+   @Inject
+   public ITextPdfInvoiceAppender(XmpAppender xmpAppender) {
+      this.xmp = xmpAppender;
+   }
 
-	/**
-	 * Append invoice.
-	 *
-	 * @param invoice the invoice
-	 * @param inputPdf the input pdf
-	 * @param resultingPdf the resulting pdf
-	 */
-	public void append(Invoice invoice, InputStream inputPdf, OutputStream resultingPdf) {
-		try {
-			appendInvoiceIntern(invoice,inputPdf,resultingPdf);
-		} catch (DocumentException e) {
-			throw new InvoiceAppendError("Could not open PD for modification or to close it",e);
-		} catch (IOException e) {
-			throw new InvoiceAppendError("PDF IO Error",e);
-		}
-	}
+   /**
+    * Append invoice.
+    *
+    * @param invoice the invoice
+    * @param pdf the in PDF byte array
+    * @return the byte[]
+    */
+   public byte[] append(final Invoice invoice, final byte[] pdf) {
+      ByteArrayInputStream isPdf = new ByteArrayInputStream(pdf);
+      ByteArrayOutputStream osPdf = new ByteArrayOutputStream(pdf.length);
 
-	/**
-	 * Append invoice intern.
-	 *
-	 * @param invoice the invoice
-	 * @param inPdf the in pdf
-	 * @return the byte array output stream
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws DocumentException the document exception
-	 */
-	private void appendInvoiceIntern(Invoice invoice, InputStream inPdf, OutputStream output) throws IOException, DocumentException {
+      append(invoice, isPdf, osPdf);
 
-		byte[] content = InvoiceTransformer.from(invoice);
+      return osPdf.toByteArray();
+   }
 
-		PdfReader reader = new PdfReader(inPdf);
-		
-		PdfAStamper stamper = new PdfAStamper(reader, output, PdfAConformanceLevel.PDF_A_3B);
+   /**
+    * Append invoice.
+    *
+    * @param invoice the invoice
+    * @param inputPdf the input pdf
+    * @param resultingPdf the resulting pdf
+    */
+   public void append(final Invoice invoice, InputStream inputPdf, OutputStream resultingPdf) {
+      try {
+         appendInvoiceIntern(invoice, inputPdf, resultingPdf);
+      } catch (DocumentException e) {
+         throw new InvoiceAppendError("Could not open PD for modification or to close it", e);
+      } catch (IOException e) {
+         throw new InvoiceAppendError("PDF IO Error", e);
+      }
+   }
 
-//		stamper.
-//		stamper.setXmpMetadata(xmp);
-		
-		// Creating PDF/A-3 compliant attachment.
-		PdfDictionary embeddedFileParams = new PdfDictionary();
-		embeddedFileParams.put(PARAMS, new PdfName(ZF_NAME));
-		embeddedFileParams.put(MODDATE, new PdfDate());
-		PdfFileSpecification fs = PdfFileSpecification.fileEmbedded(stamper.getWriter(), null,ZF_NAME, content , "text/xml", embeddedFileParams,0);
-		fs.put(AFRELATIONSHIP, Alternative);
-		stamper.addFileAttachment(ZF_NAME,fs);
+   /**
+    * Append invoice intern.
+    *
+    * @param invoice the invoice
+    * @param inPdf the in pdf
+    * @return the byte array output stream
+    * @throws IOException Signals that an I/O exception has occurred.
+    * @throws DocumentException the document exception
+    */
+   private void appendInvoiceIntern(Invoice invoice, InputStream inPdf, OutputStream output) throws IOException,
+         DocumentException {
 
-		//AF
-		PdfArray array = new PdfArray();
-		array.add(fs.getReference());
-		stamper.getWriter().getExtraCatalog().put(new PdfName("AF"), array);
+      byte[] content = InvoiceTransformer.from(invoice);
 
-		stamper.close();
-		reader.close();
-	}
+      PdfReader reader = new PdfReader(inPdf);
+
+      PdfAStamper stamper = new PdfAStamper(reader, output, PdfAConformanceLevel.PDF_A_3B);
+
+      appendZfContentToXmp(stamper,invoice);
+
+      // Creating PDF/A-3 compliant attachment.
+      PdfDictionary embeddedFileParams = new PdfDictionary();
+      embeddedFileParams.put(PARAMS, new PdfName(ZF_FILE_NAME));
+      embeddedFileParams.put(MODDATE, new PdfDate());
+      PdfFileSpecification fs = PdfFileSpecification.fileEmbedded(stamper.getWriter(), null, ZF_FILE_NAME, content,
+            "text/xml", embeddedFileParams, 0);
+      fs.put(AFRELATIONSHIP, Alternative);
+      stamper.addFileAttachment(ZF_FILE_NAME, fs);
+
+      //AF
+      PdfArray array = new PdfArray();
+      array.add(fs.getReference());
+      stamper.getWriter().getExtraCatalog().put(new PdfName("AF"), array);
+
+      stamper.close();
+      reader.close();
+   }
+
+   private void appendZfContentToXmp(PdfAStamper stamper, Invoice invoice) throws IOException {
+      InvoiceProfile profile = invoice.getContext().getInvoiceProfile();
+      ZfXmpInfo info = new ZfXmpInfo(profile, ZF_FILE_NAME, INVOICE);
+      try {
+         byte[] newXmpMetadata = xmp.append(stamper.getReader().getMetadata(), info);
+         stamper.setXmpMetadata(newXmpMetadata);
+      } catch (TransformationWarning e) {
+         // TODO if we don't rethrow we should provide a result object with a warning Msg.
+         throw new InvoiceAppendError("Error Appending XMP to PDF", e.getCause());
+      }
+   }
 }
