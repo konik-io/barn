@@ -104,10 +104,12 @@ public class ITextPdfInvoiceAppender implements InvoiceAppender {
 		byte[] content = InvoiceTransformer.from(invoice);
 
 		PdfReader reader = new PdfReader(inPdf);
+		
 		PdfAStamper stamper = new PdfAStamper(reader, output, PdfAConformanceLevel.PDF_A_3B);
 
-		stamper.createXmpMetadata();
-
+//		stamper.
+//		stamper.setXmpMetadata(xmp);
+		
 		// Creating PDF/A-3 compliant attachment.
 		PdfDictionary embeddedFileParams = new PdfDictionary();
 		embeddedFileParams.put(PARAMS, new PdfName(ZF_NAME));
