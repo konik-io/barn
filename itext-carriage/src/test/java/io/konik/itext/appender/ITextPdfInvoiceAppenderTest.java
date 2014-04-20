@@ -12,12 +12,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
+ * You should have received a copy of the GNU Affero General  Public License
  * along with the Konik library. If not, see <http://www.gnu.org/licenses/>.
  */
 package io.konik.itext.appender;
 
-import static org.apache.commons.io.IOUtils.toByteArray;
+import static com.google.common.io.ByteStreams.toByteArray;
 import static org.assertj.core.api.Assertions.assertThat;
 import io.konik.InvoiceTransformer;
 import io.konik.harness.InvoiceAppender;
@@ -34,7 +34,7 @@ public class ITextPdfInvoiceAppenderTest {
    InputStream isPdf;
    InputStream isXml;
    InvoiceTransformer transformer = new InvoiceTransformer();
-   
+
    @Before
    public void setUp() throws Exception {
       appender = new ITextPdfInvoiceAppender();
