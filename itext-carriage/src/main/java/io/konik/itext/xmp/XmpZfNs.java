@@ -15,22 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with the Konik library. If not, see <http://www.gnu.org/licenses/>.
  */
-package io.konik.exception;
-
+package io.konik.itext.xmp;
 
 /**
- * The Konik Invoice Handling Exception is thrown whenever something goes wrong.</br>
- * This exception is thrown when the caller can not recover from the error and can not continue.
+ * 
+ * The Enum Containing Xmp Zf Ns.
  */
-public class TransformationException extends RuntimeException {
+public enum XmpZfNs {
 
-   private static final long serialVersionUID = -249661599608287823L;
+   ZF_NS("urn:ferd:pdfa:invoice:rc#"), ZF_NS_ALT("urn:ferd:pdfa:invoice:rc");
+
+   public final String value;
+
+   private XmpZfNs(String namespaceUri) {
+      this.value = namespaceUri;
+   }
    
-   public TransformationException(String message){
-      super(message);
-      
-   }
-   public TransformationException(String message, Throwable throwable) {
-     super(message,throwable);
-   }
 }

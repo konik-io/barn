@@ -15,42 +15,69 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with the Konik library. If not, see <http://www.gnu.org/licenses/>.
  */
-package io.konik.itext;
+package io.konik.itext.xmp;
+
+import static io.konik.util.Strings.isNullOrEmpty;
+
+import java.util.Arrays;
+
+import io.konik.invoice.profiles.InvoiceProfile;
+import io.konik.util.Strings;
 
 /**
- * XMP ZUGFeRD PDF meta data.
- *
+ * This entity represents ZUGFeRD meta data that a part of the PDF/A XMP extension. <br/>
+ * Example:
+ * 
+ * <pre>
+ *  <zf:ConformanceLevel>BASIC</zf:ConformanceLevel>
+ *  <zf:DocumentFileName>ZUGFeRD-invoice.xml</zf:DocumentFileName>
+ *  <zf:DocumentType>INVOICE</zf:DocumentType>
+ *  <zf:Version>RC</zf:Version>
+ * </pre>
  */
-public class ZfXmpMetaData {
-   
+public class ZfXmpInfo {
+
    /** The conformance level. */
    private String conformanceLevel;
-   
-   /** The document file name. */
+
+   /** The document file value. */
    private String documentFileName;
-   
+
    /** The document type. */
    private String documentType;
-   
+
    /** The version. */
    private String version;
 
    /**
-    * Instantiates a new zf xmp meta data filled with default data;
+    * Instantiates a empty ZUGFeRD XMP Info Entity
     */
-   public ZfXmpMetaData() {
-      this("", "ZUGFeRD-invoice.xml", "INVOICE", "");
+   public ZfXmpInfo() {
+   }
+
+   /**
+    * Instantiates a new zf xmp info.
+    *
+    * @param profile the profile
+    * @param documentFileName the document file name
+    * @param documentType the document type
+    */
+   public ZfXmpInfo(InvoiceProfile profile, String documentFileName, String documentType) {
+      this.conformanceLevel = profile.conformanceLevel;
+      this.documentFileName = documentFileName;
+      this.documentType = documentType;
+      this.version = InvoiceProfile.VERSION;
    }
 
    /**
     * Instantiates a new zf xmp meta data.
     *
     * @param conformanceLevel the conformance level
-    * @param documentFileName the document file name
+    * @param documentFileName the document file value
     * @param documentType the document type
     * @param version the version
     */
-   public ZfXmpMetaData(String conformanceLevel, String documentFileName, String documentType, String version) {
+   public ZfXmpInfo(String conformanceLevel, String documentFileName, String documentType, String version) {
       super();
       this.conformanceLevel = conformanceLevel;
       this.documentFileName = documentFileName;
@@ -77,18 +104,18 @@ public class ZfXmpMetaData {
    }
 
    /**
-    * Gets the document file name.
+    * Gets the document file value.
     *
-    * @return the document file name
+    * @return the document file value
     */
    public String getDocumentFileName() {
       return documentFileName;
    }
 
    /**
-    * Sets the document file name.
+    * Sets the document file value.
     *
-    * @param documentFileName the new document file name
+    * @param documentFileName the new document file value
     */
    public void setDocumentFileName(String documentFileName) {
       this.documentFileName = documentFileName;
@@ -146,7 +173,7 @@ public class ZfXmpMetaData {
       if (this == obj) return true;
       if (obj == null) return false;
       if (getClass() != obj.getClass()) return false;
-      ZfXmpMetaData other = (ZfXmpMetaData) obj;
+      ZfXmpInfo other = (ZfXmpInfo) obj;
       if (conformanceLevel == null) {
          if (other.conformanceLevel != null) return false;
       } else if (!conformanceLevel.equals(other.conformanceLevel)) return false;
@@ -165,15 +192,18 @@ public class ZfXmpMetaData {
    @Override
    public String toString() {
       StringBuilder builder = new StringBuilder();
-      builder.append("ZfXmpMetaData [conformanceLevel=").append(conformanceLevel).append(", documentFileName=")
+      builder.append("ZfXmpInfo [conformanceLevel=").append(conformanceLevel).append(", documentFileName=")
             .append(documentFileName).append(", documentType=").append(documentType).append(", version=")
             .append(version).append("]");
       return builder.toString();
    }
-   
-   
-   
-   
-   
 
+   /**
+    * Checks if content of this entity is valid.
+    *
+    * @return true, if is valid
+    */
+   public boolean isValid() {
+      return !(isNullOrEmpty(conformanceLevel) && isNullOrEmpty(documentFileName) && isNullOrEmpty(documentType) && isNullOrEmpty(version));
+   }
 }
