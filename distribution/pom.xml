@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>io.konik</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.2.0-SNAPSHOT</version>
+		<version>0.2.0</version>
 	</parent>
 
 	<build>
@@ -36,12 +36,12 @@
 		<dependency>
 			<groupId>io.konik</groupId>
 			<artifactId>konik</artifactId>
-			<version>0.2.0-SNAPSHOT</version>
+			<version>0.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>io.konik</groupId>
 			<artifactId>itext-carriage</artifactId>
-			<version>0.2.0-SNAPSHOT</version>
+			<version>0.2.0</version>
 		</dependency>
 	</dependencies>
 </project>
