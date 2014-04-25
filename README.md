@@ -26,4 +26,4 @@ Fancy project badges
 
 [![Build Status](http://ci.konik.io/job/barn/badge/icon)](http://ci.konik.io/job/barn/)
 
-[![Dependency Status](https://www.versioneye.com/user/projects/5356668dfe0d07e4c9000148/badge.png)](https://www.versioneye.com/user/projects/5356668dfe0d07e4c9000148)
+[![Dependency Status](https://www.versioneye.com/user/projects/53595d6afe0d072ef6000104/badge.png)](https://www.versioneye.com/user/projects/53595d6afe0d072ef6000104)
