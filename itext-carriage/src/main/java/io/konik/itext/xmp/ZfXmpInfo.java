@@ -18,25 +18,21 @@
 package io.konik.itext.xmp;
 
 import static io.konik.util.Strings.isNullOrEmpty;
-
-import java.util.Arrays;
-
-import io.konik.invoice.profiles.InvoiceProfile;
-import io.konik.util.Strings;
+import io.konik.zugferd.profile.Profile;
 
 /**
- * This entity represents ZUGFeRD meta data that a part of the PDF/A XMP extension. <br/>
- * Example:
+ * ZUGFeRD XMP Info object represents the ZUGFeRD meta data which a part of the PDF/A XMP extension.
  * 
- * <pre>
- *  <zf:ConformanceLevel>BASIC</zf:ConformanceLevel>
- *  <zf:DocumentFileName>ZUGFeRD-invoice.xml</zf:DocumentFileName>
- *  <zf:DocumentType>INVOICE</zf:DocumentType>
- *  <zf:Version>RC</zf:Version>
- * </pre>
+ * *Example:*
+ * [source,xml] 
+ * --
+ * &lt;zf:ConformanceLevel&gt;BASIC&lt;/zf:ConformanceLevel&gt;
+ * &lt;zf:DocumentFileName&gt;ZUGFeRD-invoice.xml&lt;/zf:DocumentFileName&gt;
+ * &lt;zf:DocumentType&gt;INVOICE&lt;/zf:DocumentType&gt;
+ * &lt;zf:Version&gt;RC&lt;/zf:Version&gt;
+ * --
  */
 public class ZfXmpInfo {
-
    /** The conformance level. */
    private String conformanceLevel;
 
@@ -62,11 +58,11 @@ public class ZfXmpInfo {
     * @param documentFileName the document file name
     * @param documentType the document type
     */
-   public ZfXmpInfo(InvoiceProfile profile, String documentFileName, String documentType) {
-      this.conformanceLevel = profile.conformanceLevel;
+   public ZfXmpInfo(Profile profile, String documentFileName, String documentType) {
+      this.conformanceLevel = profile.getSimpleName();
       this.documentFileName = documentFileName;
       this.documentType = documentType;
-      this.version = InvoiceProfile.VERSION;
+      this.version = profile.getVersion();
    }
 
    /**

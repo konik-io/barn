@@ -18,49 +18,26 @@
 package io.konik.benchmark;
 
 import static com.google.common.io.ByteStreams.toByteArray;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openjdk.jmh.annotations.Mode.SingleShotTime;
 import static org.openjdk.jmh.annotations.Mode.Throughput;
 import static org.openjdk.jmh.annotations.Scope.Thread;
-import static org.openjdk.jmh.profile.ProfilerType.STACK;
-import static org.openjdk.jmh.runner.options.VerboseMode.SILENT;
 import io.konik.InvoiceTransformer;
 import io.konik.itext.appender.ITextPdfInvoiceAppender;
 import io.konik.zugferd.Invoice;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.text.Format;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-
-import javax.swing.text.DateFormatter;
 
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
-import org.openjdk.jmh.annotations.Measurement;
-import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Threads;
-import org.openjdk.jmh.annotations.Warmup;
-import org.openjdk.jmh.output.results.ResultFormatType;
-import org.openjdk.jmh.profile.ProfilerType;
-import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
-import org.openjdk.jmh.runner.options.Options;
-import org.openjdk.jmh.runner.options.OptionsBuilder;
-import org.openjdk.jmh.runner.options.VerboseMode;
-import org.openjdk.jmh.runner.options.WarmupMode;
 
+@SuppressWarnings("javadoc")
 @State(Thread)
 @BenchmarkMode(Throughput)
 @OutputTimeUnit(SECONDS)

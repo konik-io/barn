@@ -17,8 +17,8 @@
  */
 package io.konik.itext.xmp;
 
-import static io.konik.itext.xmp.XmpZfNs.ZF_NS;
 import static io.konik.itext.xmp.XmpZfNs.ZF_NS_ALT;
+import static io.konik.itext.xmp.XmpZfNs.ZF_NS;
 import io.konik.exception.TransformationWarning;
 
 import java.io.ByteArrayInputStream;
@@ -46,8 +46,7 @@ public class XmpExtractor {
     *
     * @param xmpContent the xmp xml conent
     * @return the extracted information from xmp content
-    * @throws XMLStreamException the XML stream exception
-    * @throws TransformationWarning 
+    * @throws TransformationWarning the transformation warning
     */
    public ZfXmpInfo extract(byte[] xmpContent) throws TransformationWarning {
       try {

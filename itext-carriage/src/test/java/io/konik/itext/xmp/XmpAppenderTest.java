@@ -25,6 +25,7 @@ import java.io.InputStream;
 import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings("javadoc")
 public class XmpAppenderTest {
 
    private XmpAppender xmpAppender;
