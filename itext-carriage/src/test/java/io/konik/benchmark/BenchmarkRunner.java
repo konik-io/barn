@@ -27,16 +27,11 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 /**
- * 
- * The Class BenchmarkRunner.
+ * The Benchmark Runner.
  */
+@SuppressWarnings("javadoc")
 public class BenchmarkRunner {
    
-   /**
-    * The main method.
-    *
-    * @throws RunnerException the runner exception
-    */
    public static void main(String... args) throws RunnerException {
       SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd@HH-mm-ss");
       Options opt = new OptionsBuilder()

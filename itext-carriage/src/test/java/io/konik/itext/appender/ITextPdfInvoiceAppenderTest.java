@@ -23,23 +23,29 @@ import io.konik.InvoiceTransformer;
 import io.konik.harness.InvoiceAppender;
 import io.konik.zugferd.Invoice;
 
+import java.io.File;
 import java.io.InputStream;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.io.Files;
+
+@SuppressWarnings("javadoc")
 public class ITextPdfInvoiceAppenderTest {
 
    InvoiceAppender appender;
    InputStream isPdf;
    InputStream isXml;
    InvoiceTransformer transformer = new InvoiceTransformer();
+   private InputStream isRandomXml;
 
    @Before
    public void setUp() throws Exception {
       appender = new ITextPdfInvoiceAppender();
       isPdf = getClass().getResourceAsStream("/acme_invoice-42.pdf");
       isXml = getClass().getResourceAsStream("/ZUGFeRD-invoice.xml");
+      isRandomXml = getClass().getResourceAsStream("/zf_random_invoice.xml");
    }
 
    @Test
@@ -49,14 +55,24 @@ public class ITextPdfInvoiceAppenderTest {
       byte[] outPdf = appender.append(invoice, pdfInput);
       assertThat(outPdf).isNotNull();
 
-//      FileUtils.writeByteArrayToFile(new File("acme_invoice-42.pdf"), outPdf);
+      Files.write(outPdf , new File("target/acme_invoice-42.pdf"));
    }
 
+   @Test
+   public void appendInputStream_random() throws Exception {
+      Invoice invoice = transformer.from(isRandomXml);
+      byte[] pdfInput = toByteArray(isPdf);
+      byte[] outPdf = appender.append(invoice, pdfInput);
+      assertThat(outPdf).isNotNull();
+
+      Files.write(outPdf , new File("target/acme_invoice-42_random.pdf"));
+   }
+   
    @Test
    public void appendByteArray() throws Exception {
       Invoice invoice = transformer.from(isXml);
       byte[] outPdf = appender.append(invoice, toByteArray(isPdf));
       assertThat(outPdf).isNotNull();
    }
-
+   
 }

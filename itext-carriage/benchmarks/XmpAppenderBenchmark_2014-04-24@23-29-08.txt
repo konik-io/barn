@@ -1,0 +1,3 @@
+"Benchmark","Mode","Threads","Samples","Mean","Mean Error (99.9%)","Unit"
+"io.konik.benchmark.XmpAppenderBenchmark.append","thrpt",1,20,1227.475,65.6026818097723,"ops/s"
+"io.konik.benchmark.XmpAppenderBenchmark.append_with4Threads3","thrpt",4,20,2315.7791666666667,50.45376362598846,"ops/s"

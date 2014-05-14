@@ -40,6 +40,7 @@ import org.openjdk.jmh.runner.RunnerException;
 @State(Thread)
 @BenchmarkMode(Throughput)
 @OutputTimeUnit(SECONDS)
+@SuppressWarnings("javadoc")
 public class XmpAppenderBenchmark extends DefaultBenchmark {
 
    private final XmpAppender xmpAppender = new XmpAppender();

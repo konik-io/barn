@@ -23,6 +23,7 @@ import io.konik.exception.TransformationWarning;
 
 import org.junit.Test;
 
+@SuppressWarnings("javadoc")
 public class XmpExtractorTest {
 
    XmpExtractor xmpCreator = new XmpExtractor();

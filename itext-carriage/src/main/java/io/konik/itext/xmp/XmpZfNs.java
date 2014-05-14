@@ -19,16 +19,20 @@ package io.konik.itext.xmp;
 
 /**
  * 
- * The Enum Containing Xmp Zf Ns.
+ * The Enum Containing ZUGFeRD XMP namespace.
  */
 public enum XmpZfNs {
 
-   ZF_NS("urn:ferd:pdfa:invoice:rc#"), ZF_NS_ALT("urn:ferd:pdfa:invoice:rc");
+   /** The zf ns. */
+   ZF_NS("urn:ferd:pdfa:invoice:rc#"),
+   /** The zf ns alt. */
+   ZF_NS_ALT("urn:ferd:pdfa:invoice:rc");
 
+   /** The value. */
    public final String value;
 
    private XmpZfNs(String namespaceUri) {
       this.value = namespaceUri;
    }
-   
+
 }
