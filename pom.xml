@@ -39,6 +39,8 @@
       <url>http://konik.io</url>
    </organization>
 
+   <inceptionYear>2014</inceptionYear>
+
    <developers>
       <developer>
          <id>Vad1mo</id>
@@ -260,6 +262,35 @@
                <linksource>true</linksource>
             </configuration>
          </plugin>
+         <plugin>
+            <groupId>com.mycila</groupId>
+            <artifactId>license-maven-plugin</artifactId>
+            <version>2.6</version>
+            <configuration>
+               <header>../project/license/license-file-header.txt</header>
+               <mapping>
+                  <java>SLASHSTAR_STYLE</java>
+               </mapping>
+               <properties>
+                  <project.name>Konik library</project.name>
+                  <project.organization>${project.organization.name}</project.organization>
+               </properties>
+               <includes>
+                  <include>src/test/java/</include>
+                  <include>src/main/java/</include>
+                  <!-- <include>src/test/java/io/konik/examples/</include> -->
+               </includes>
+            </configuration>
+            <executions>
+               <execution>
+                  <id>validate-all-files-have-license</id>
+                  <phase>validate</phase>
+                  <goals>
+                     <goal>format</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
       </plugins>
    </build>
 
@@ -333,5 +364,6 @@
          </build>
       </profile>
    </profiles>
+
 
 </project>
