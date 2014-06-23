@@ -122,7 +122,7 @@ public class XmpAppender {
    }
 
    private Node getExtensionNodeFromExtensionFile() throws SAXException, IOException, ParserConfigurationException, XPathExpressionException{
-      InputStream zfExtensionIs = this.getClass().getResourceAsStream("/zfSchema/zf_xmp_extension.xml");
+      InputStream zfExtensionIs = this.getClass().getResourceAsStream("/zfSchema/zf_extension.xmp");
       Document zfExtension = getDocumentBuilder().parse(zfExtensionIs);
       Node zfExtensionNode = (Node) xpath.evaluate("/RDF/Description/schemas/Bag/li", zfExtension, NODE);
       return zfExtensionNode;
