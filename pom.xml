@@ -278,18 +278,17 @@
                <includes>
                   <include>src/test/java/</include>
                   <include>src/main/java/</include>
-                  <!-- <include>src/test/java/io/konik/examples/</include> -->
                </includes>
             </configuration>
-            <executions>
-               <execution>
-                  <id>validate-all-files-have-license</id>
-                  <phase>validate</phase>
-                  <goals>
-                     <goal>format</goal>
-                  </goals>
-               </execution>
-            </executions>
+<!--             <executions> -->
+<!--                <execution> -->
+<!--                   <id>validate-all-files-have-license</id> -->
+<!--                   <phase>validate</phase> -->
+<!--                   <goals> -->
+<!--                      <goal>format</goal> -->
+<!--                   </goals> -->
+<!--                </execution> -->
+<!--             </executions> -->
          </plugin>
       </plugins>
    </build>
