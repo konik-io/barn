@@ -58,7 +58,7 @@ public class XmpExtractor {
    }
 
    private ZfXmpInfo extractIntern(byte[] xmpConent) throws TransformationWarning, XMLStreamException {
-      ZfXmpInfo zfInfo = new ZfXmpInfo();;
+      ZfXmpInfo zfInfo = new ZfXmpInfo();
       
       XMLInputFactory inputFactory = XMLInputFactory.newInstance();
       XMLEventReader xmlEventReader = inputFactory.createXMLEventReader(new ByteArrayInputStream(xmpConent));
@@ -83,7 +83,7 @@ public class XmpExtractor {
             }
          }
       }
-      if (false == zfInfo.isValid()) {
+      if (!zfInfo.isValid()) {
          throw new TransformationWarning("No ZF information availible within XMP data");
       }
      return zfInfo;
