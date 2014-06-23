@@ -36,6 +36,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -168,8 +169,8 @@ public class ITextPdfInvoiceAppender implements InvoiceAppender {
          byte[] newXmpMetadata = xmp.append(stamper.getReader().getMetadata(), info);
          stamper.setXmpMetadata(newXmpMetadata);
       } catch (TransformationWarning e) {
+         throw new InvoiceAppendError("Error Appending XMP to PDF", e);
          // TODO if we don't rethrow we should provide a result object with a warning Msg.
-         throw new InvoiceAppendError("Error Appending XMP to PDF", e.getCause());
       }
    }
 }
