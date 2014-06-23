@@ -1,19 +1,20 @@
-/* Copyright (C) 2014 konik.io
+/*
+ * Copyright (C) 2014 Konik.io
  *
- * This file is part of the Konik library.
+ * This file is part of Konik library.
  *
- * The Konik library is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * Konik library is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * The Konik library is distributed in the hope that it will be useful,
+ * Konik library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with the Konik library. If not, see <http://www.gnu.org/licenses/>.
+ * along with Konik library.  If not, see <http://www.gnu.org/licenses/>.
  */
 package io.konik.itext.appender;
 
@@ -25,10 +26,10 @@ import io.konik.InvoiceTransformer;
 import io.konik.exception.TransformationWarning;
 import io.konik.harness.InvoiceAppendError;
 import io.konik.harness.InvoiceAppender;
-import io.konik.invoice.profiles.InvoiceProfile;
 import io.konik.itext.xmp.XmpAppender;
 import io.konik.itext.xmp.ZfXmpInfo;
 import io.konik.zugferd.Invoice;
+import io.konik.zugferd.profile.Profile;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -66,13 +67,25 @@ public class ITextPdfInvoiceAppender implements InvoiceAppender {
 
    private final XmpAppender xmp;
 
+   private final InvoiceTransformer transformer;
+
+   /**
+    * Instantiates a new i-text pdf invoice appender.
+    */
    public ITextPdfInvoiceAppender() {
-      this(new XmpAppender());
+      this(new XmpAppender(),new InvoiceTransformer());
    }
    
+   /**
+    * Instantiates a new i-text pdf invoice appender.
+    *
+    * @param xmpAppender the xmp appender
+    * @param invoiceTransformer the invoice transformer
+    */
    @Inject
-   public ITextPdfInvoiceAppender(XmpAppender xmpAppender) {
+   public ITextPdfInvoiceAppender(XmpAppender xmpAppender, InvoiceTransformer invoiceTransformer) {
       this.xmp = xmpAppender;
+      this.transformer = invoiceTransformer;
    }
 
    /**
@@ -82,6 +95,7 @@ public class ITextPdfInvoiceAppender implements InvoiceAppender {
     * @param pdf the in PDF byte array
     * @return the byte[]
     */
+   @Override
    public byte[] append(final Invoice invoice, final byte[] pdf) {
       ByteArrayInputStream isPdf = new ByteArrayInputStream(pdf);
       ByteArrayOutputStream osPdf = new ByteArrayOutputStream(pdf.length);
@@ -98,6 +112,7 @@ public class ITextPdfInvoiceAppender implements InvoiceAppender {
     * @param inputPdf the input pdf
     * @param resultingPdf the resulting pdf
     */
+   @Override
    public void append(final Invoice invoice, InputStream inputPdf, OutputStream resultingPdf) {
       try {
          appendInvoiceIntern(invoice, inputPdf, resultingPdf);
@@ -113,14 +128,14 @@ public class ITextPdfInvoiceAppender implements InvoiceAppender {
     *
     * @param invoice the invoice
     * @param inPdf the in pdf
-    * @return the byte array output stream
+    * @param output the output
     * @throws IOException Signals that an I/O exception has occurred.
     * @throws DocumentException the document exception
     */
    private void appendInvoiceIntern(Invoice invoice, InputStream inPdf, OutputStream output) throws IOException,
          DocumentException {
 
-      byte[] content = InvoiceTransformer.from(invoice);
+      byte[] content = transformer.from(invoice);
 
       PdfReader reader = new PdfReader(inPdf);
 
@@ -147,7 +162,7 @@ public class ITextPdfInvoiceAppender implements InvoiceAppender {
    }
 
    private void appendZfContentToXmp(PdfAStamper stamper, Invoice invoice) throws IOException {
-      InvoiceProfile profile = invoice.getContext().getInvoiceProfile();
+      Profile profile = invoice.getContext().getProfile();
       ZfXmpInfo info = new ZfXmpInfo(profile, ZF_FILE_NAME, INVOICE);
       try {
          byte[] newXmpMetadata = xmp.append(stamper.getReader().getMetadata(), info);

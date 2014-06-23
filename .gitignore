@@ -5,3 +5,11 @@
 **.project
 **.classpath
 **/target
+.factorypath
+
+.settings/org.eclipse.core.resources.prefs
+
+.settings/org.eclipse.m2e.core.prefs
+
+target/javadoc-bundle-options/javadoc-options-javadoc-resources.xml
+infinitest.filters

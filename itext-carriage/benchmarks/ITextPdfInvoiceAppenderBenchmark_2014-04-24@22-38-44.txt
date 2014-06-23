@@ -1,0 +1,4 @@
+"Benchmark","Mode","Threads","Samples","Mean","Mean Error (99.9%)","Unit"
+"io.konik.benchmark.ITextPdfInvoiceAppenderBenchmark.append_witStreams","thrpt",1,20,27.280833333333327,1.1118029835342158,"ops/s"
+"io.konik.benchmark.ITextPdfInvoiceAppenderBenchmark.append_witStreamsAndThreads","thrpt",4,20,40.37166666666667,3.137553451034379,"ops/s"
+"io.konik.benchmark.ITextPdfInvoiceAppenderBenchmark.append_withByteArray","thrpt",1,20,27.016666666666662,1.4677722793279069,"ops/s"

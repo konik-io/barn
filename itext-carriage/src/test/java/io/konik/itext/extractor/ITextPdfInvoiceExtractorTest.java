@@ -1,19 +1,20 @@
-/* Copyright (C) 2014 konik.io
+/*
+ * Copyright (C) 2014 Konik.io
  *
- * This file is part of the Konik library.
+ * This file is part of Konik library.
  *
- * The Konik library is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * Konik library is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * The Konik library is distributed in the hope that it will be useful,
+ * Konik library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with the Konik library. If not, see <http://www.gnu.org/licenses/>.
+ * along with Konik library.  If not, see <http://www.gnu.org/licenses/>.
  */
 package io.konik.itext.extractor;
 
@@ -22,14 +23,13 @@ import io.konik.harness.InvoiceExtractionError;
 import io.konik.zugferd.Invoice;
 
 import java.io.DataInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.xml.sax.SAXException;
 
+@SuppressWarnings("javadoc")
 public class ITextPdfInvoiceExtractorTest {
 
    ITextPdfInvoiceExtractor invoiceExtractor;
@@ -52,11 +52,11 @@ public class ITextPdfInvoiceExtractorTest {
 
       //validate
       assertThat(invoice).isNotNull();
-      assertThat(invoice.getHeader().getId().getValue()).isEqualTo("471102");
+      assertThat(invoice.getHeader().getInvoiceNumber()).isEqualTo("471102");
    }
 
    @Test
-   public void extractInputStream() throws SAXException, IOException {
+   public void extractInputStream() {
       //setup
       InputStream pdfStream = getClass().getResourceAsStream("/Beispielrechnung_ZUGFeRD_RC_COMFORT.pdf");
 
@@ -65,7 +65,7 @@ public class ITextPdfInvoiceExtractorTest {
 
       //very
       assertThat(invoice).isNotNull();
-      assertThat(invoice.getHeader().getId().getValue()).isEqualTo("471102");
+      assertThat(invoice.getHeader().getInvoiceNumber()).isEqualTo("471102");
    }
 
    @Test(expected = InvoiceExtractionError.class)

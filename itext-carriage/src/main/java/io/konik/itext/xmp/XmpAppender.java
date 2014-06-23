@@ -1,19 +1,20 @@
-/* Copyright (C) 2014 konik.io
+/*
+ * Copyright (C) 2014 Konik.io
  *
- * This file is part of the Konik library.
+ * This file is part of Konik library.
  *
- * The Konik library is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * Konik library is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * The Konik library is distributed in the hope that it will be useful,
+ * Konik library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with the Konik library. If not, see <http://www.gnu.org/licenses/>.
+ * along with Konik library.  If not, see <http://www.gnu.org/licenses/>.
  */
 package io.konik.itext.xmp;
 
@@ -50,14 +51,27 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+/**
+ * The Xmp Appender.
+ */
 @Named
 @Singleton
 public class XmpAppender {
 
-   private XPath xpath;
+   private final XPath xpath;
    private DocumentBuilder documentBuilder;
    private Transformer transformer;
 
+   /**
+    * Instantiates a new XMP appender.
+    */
+   public XmpAppender() {
+      XPathFactory factory = XPathFactory.newInstance();
+      xpath = factory.newXPath();
+      //java bug workaround
+      System.setProperty("com.sun.org.apache.xml.internal.dtm.DTMManager", "com.sun.org.apache.xml.internal.dtm.ref.DTMManagerDefault");
+   }
+   
    /**
     * Append the ZUGFeRD XMP info to the existing content.
     *
@@ -73,9 +87,8 @@ public class XmpAppender {
             appendZfExtensionToDocument(xmpDocument);
             appendZfInfoToDocumnt(xmpDocument, info);
             return transformToOutPutStream(xmpDocument).toByteArray();
-         } else {
-            return xmpData;
          }
+         return xmpData;
       } catch (Exception e) {
          throw new TransformationWarning("Could not append ZF information to PDFs XMP data: "+ e.getLocalizedMessage(), e);
       }
@@ -86,30 +99,32 @@ public class XmpAppender {
    }
 
    /**
-    * Contains no ZUGFeRD entry in Document.<br/>
+    * Contains no ZUGFeRD entry in Document.
     * 
-    * Check for" // <rdf:Description rdf:about="" xmlns:zf="urn:ferd:pdfa:invoice:rc#">"
-    *
+    * Check for:
+    * [source,xml]
+    * &lt;rdf:Description rdf:about=&quot;&quot; xmlns:zf=&quot;urn:ferd:pdfa:invoice:rc#&quot;&gt;
+    * 
     * @param xmpDocument the xmp document we are checking on
     * @return true, if has no Zf Entry
     * @throws XPathExpressionException the x path expression exception
     */
    private boolean hasNoZfEntry(Document xmpDocument) throws XPathExpressionException  {
-      String value = (String) getXPath().evaluate("/xmpmeta/RDF/Description/DocumentType", xmpDocument);
+      String value = xpath.evaluate("/xmpmeta/RDF/Description/DocumentType", xmpDocument);
       return !"INVOICE".equalsIgnoreCase(value);
    }
 
    private Document appendZfExtensionToDocument(Document document) throws XPathExpressionException, DOMException, SAXException, IOException, ParserConfigurationException {
-      Node rdfNode = (Node) getXPath().evaluate("/xmpmeta/RDF/Description/schemas/Bag", document, NODE);
+      Node rdfNode = (Node) xpath.evaluate("/xmpmeta/RDF/Description/schemas/Bag", document, NODE);
       Node importedZfNode = document.importNode(getExtensionNodeFromExtensionFile(), true);
       rdfNode.appendChild(importedZfNode);
       return document;
    }
 
    private Node getExtensionNodeFromExtensionFile() throws SAXException, IOException, ParserConfigurationException, XPathExpressionException{
-      InputStream zfExtensionIs = this.getClass().getResourceAsStream("/zfSchema/zf_xmp_extension.xml");
+      InputStream zfExtensionIs = this.getClass().getResourceAsStream("/zfSchema/zf_extension.xmp");
       Document zfExtension = getDocumentBuilder().parse(zfExtensionIs);
-      Node zfExtensionNode = (Node) getXPath().evaluate("/RDF/Description/schemas/Bag/li", zfExtension, NODE);
+      Node zfExtensionNode = (Node) xpath.evaluate("/RDF/Description/schemas/Bag/li", zfExtension, NODE);
       return zfExtensionNode;
    }
 
@@ -129,7 +144,7 @@ public class XmpAppender {
          throws TransformerConfigurationException, TransformerFactoryConfigurationError, TransformerException,
          ParserConfigurationException, XPathExpressionException {
 
-      Node descriptionNode = (Node) getXPath().evaluate("/xmpmeta/RDF", xmpDocument, NODE);
+      Node descriptionNode = (Node) xpath.evaluate("/xmpmeta/RDF", xmpDocument, NODE);
       Node zfDescriptionNode = createZfDescriptionNode(xmpDocument, info);
       descriptionNode.appendChild(zfDescriptionNode);
 
@@ -152,8 +167,7 @@ public class XmpAppender {
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       Source src = new DOMSource(doc);
       Result dest = new StreamResult(outputStream);
-      Transformer transformer = getTransformer();
-      transformer.transform(src, dest);
+      getTransformer().transform(src, dest);
       return outputStream;
    }
 
@@ -171,13 +185,5 @@ public class XmpAppender {
          documentBuilder = docBuilderFactory.newDocumentBuilder();
       }
       return documentBuilder;
-   }
-
-   private XPath getXPath() {
-      if (xpath == null) {
-         XPathFactory factory = XPathFactory.newInstance();
-         xpath = factory.newXPath();
-      }
-      return xpath;
    }
 }

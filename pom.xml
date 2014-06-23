@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <prerequisites>
       <maven>3.0</maven>
@@ -37,6 +38,8 @@
       <name>Konik.io</name>
       <url>http://konik.io</url>
    </organization>
+
+   <inceptionYear>2014</inceptionYear>
 
    <developers>
       <developer>
@@ -242,6 +245,51 @@
                </signature>
             </configuration>
          </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <configuration>
+               <nohelp>true</nohelp>
+               <nodeprecated>true</nodeprecated>
+               <!-- <additionalparam>-Xdoclint:none</additionalparam> -->
+               <doclet>org.asciidoctor.Asciidoclet</doclet>
+               <docletArtifact>
+                  <groupId>org.asciidoctor</groupId>
+                  <artifactId>asciidoclet</artifactId>
+                  <version>0.1.3</version>
+               </docletArtifact>
+               <!-- <additionalparam>-include-basedir ${project.basedir}</additionalparam> -->
+               <linksource>true</linksource>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>com.mycila</groupId>
+            <artifactId>license-maven-plugin</artifactId>
+            <version>2.6</version>
+            <configuration>
+               <header>../project/license/license-file-header.txt</header>
+               <mapping>
+                  <java>SLASHSTAR_STYLE</java>
+               </mapping>
+               <properties>
+                  <project.name>Konik library</project.name>
+                  <project.organization>${project.organization.name}</project.organization>
+               </properties>
+               <includes>
+                  <include>src/test/java/</include>
+                  <include>src/main/java/</include>
+               </includes>
+            </configuration>
+<!--             <executions> -->
+<!--                <execution> -->
+<!--                   <id>validate-all-files-have-license</id> -->
+<!--                   <phase>validate</phase> -->
+<!--                   <goals> -->
+<!--                      <goal>format</goal> -->
+<!--                   </goals> -->
+<!--                </execution> -->
+<!--             </executions> -->
+         </plugin>
       </plugins>
    </build>
 
@@ -254,7 +302,7 @@
             <version>1</version>
             <optional>true</optional>
          </dependency>
-         
+
          <!-- TESTING -->
          <dependency>
             <groupId>junit</groupId>
@@ -265,12 +313,56 @@
          <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>1.5.0</version>
+            <version>1.6.1</version>
             <scope>test</scope>
+         </dependency>
+         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>17.0</version>
+            <scope>test</scope>
+         </dependency>
+         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.3.2</version>
+            <scope>test</scope>
+         </dependency>
+         <!-- Benchmark libs -->
+         <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <version>0.8</version>
+            <scope>provided</scope>
+         </dependency>
+         <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <version>0.8</version>
+            <scope>provided</scope>
          </dependency>
       </dependencies>
    </dependencyManagement>
 
+
+   <profiles>
+      <profile>
+         <id>benchmark</id>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <configuration>
+                     <includes>
+                        <include>**/*Benchmark.java</include>
+                     </includes>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
 
 
 </project>
