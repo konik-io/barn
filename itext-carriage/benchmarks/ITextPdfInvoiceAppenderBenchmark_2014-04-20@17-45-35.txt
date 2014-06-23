@@ -1,4 +1,4 @@
 "Benchmark","Mode","Threads","Samples","Mean","Mean Error (99.9%)","Unit"
-"io.konik.benchmark.ITextPdfInvoiceAppenderBenchmark.append_witStreams","thrpt",1,20,27.7625,0.9338427647924333,"ops/s"
-"io.konik.benchmark.ITextPdfInvoiceAppenderBenchmark.append_witStreamsAndThreads","thrpt",4,20,38.916666666666664,3.457033619861736,"ops/s"
-"io.konik.benchmark.ITextPdfInvoiceAppenderBenchmark.append_withByteArray","thrpt",1,20,27.9125,0.9423040267586967,"ops/s"
+"io.konik.benchmark.InvoiceTransformerBenchmark.append_witStreams","thrpt",1,20,27.7625,0.9338427647924333,"ops/s"
+"io.konik.benchmark.InvoiceTransformerBenchmark.append_witStreamsAndThreads","thrpt",4,20,38.916666666666664,3.457033619861736,"ops/s"
+"io.konik.benchmark.InvoiceTransformerBenchmark.append_withByteArray","thrpt",1,20,27.9125,0.9423040267586967,"ops/s"
