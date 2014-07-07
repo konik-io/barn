@@ -29,8 +29,8 @@ import io.konik.itext.xmp.ZfXmpInfo;
 import java.io.IOException;
 
 import org.junit.Test;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Setup;
@@ -59,12 +59,12 @@ public class XmpAppenderBenchmark extends DefaultBenchmark {
       assertThat(acmeXmpContent).isNotEmpty();
    }
    
-   @GenerateMicroBenchmark
+   @Benchmark
    public void append() throws Exception {
       xmpAppender.append(acmeXmpContent, metaDataReference);
    }
    
-   @GenerateMicroBenchmark
+   @Benchmark
    @Threads(4)
    public void append_with4Threads3() throws Exception {
       xmpAppender.append(acmeXmpContent, metaDataReference);

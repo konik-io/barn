@@ -45,13 +45,13 @@ public class ITextPdfInvoiceAppenderTest {
    public void setUp() throws Exception {
       appender = new ITextPdfInvoiceAppender();
       isPdf = getClass().getResourceAsStream("/acme_invoice-42.pdf");
-      isXml = getClass().getResourceAsStream("/ZUGFeRD-invoice.xml");
+      isXml = getClass().getResourceAsStream("/Musterrechnung_Einfach.xml");
       isRandomXml = getClass().getResourceAsStream("/zf_random_invoice.xml");
    }
 
    @Test
    public void appendInputStream() throws Exception {
-      Invoice invoice = transformer.from(isXml);
+      Invoice invoice = transformer.toModel(isXml);
       byte[] pdfInput = toByteArray(isPdf);
       byte[] outPdf = appender.append(invoice, pdfInput);
       assertThat(outPdf).isNotNull();
@@ -61,7 +61,7 @@ public class ITextPdfInvoiceAppenderTest {
 
    @Test
    public void appendInputStream_random() throws Exception {
-      Invoice invoice = transformer.from(isRandomXml);
+      Invoice invoice = transformer.toModel(isRandomXml);
       byte[] pdfInput = toByteArray(isPdf);
       byte[] outPdf = appender.append(invoice, pdfInput);
       assertThat(outPdf).isNotNull();
@@ -71,7 +71,7 @@ public class ITextPdfInvoiceAppenderTest {
    
    @Test
    public void appendByteArray() throws Exception {
-      Invoice invoice = transformer.from(isXml);
+      Invoice invoice = transformer.toModel(isXml);
       byte[] outPdf = appender.append(invoice, toByteArray(isPdf));
       assertThat(outPdf).isNotNull();
    }

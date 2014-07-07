@@ -29,7 +29,7 @@ import io.konik.harness.InvoiceAppender;
 import io.konik.itext.xmp.XmpAppender;
 import io.konik.itext.xmp.ZfXmpInfo;
 import io.konik.zugferd.Invoice;
-import io.konik.zugferd.profile.Profile;
+import io.konik.zugferd.entity.Parameter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -136,7 +136,7 @@ public class ITextPdfInvoiceAppender implements InvoiceAppender {
    private void appendInvoiceIntern(Invoice invoice, InputStream inPdf, OutputStream output) throws IOException,
          DocumentException {
 
-      byte[] content = transformer.from(invoice);
+      byte[] content = transformer.fromModel(invoice);
 
       PdfReader reader = new PdfReader(inPdf);
 
@@ -163,7 +163,7 @@ public class ITextPdfInvoiceAppender implements InvoiceAppender {
    }
 
    private void appendZfContentToXmp(PdfAStamper stamper, Invoice invoice) throws IOException {
-      Profile profile = invoice.getContext().getProfile();
+      Parameter profile = invoice.getContext().getGuideline();
       ZfXmpInfo info = new ZfXmpInfo(profile, ZF_FILE_NAME, INVOICE);
       try {
          byte[] newXmpMetadata = xmp.append(stamper.getReader().getMetadata(), info);
@@ -172,5 +172,10 @@ public class ITextPdfInvoiceAppender implements InvoiceAppender {
          throw new InvoiceAppendError("Error Appending XMP to PDF", e);
          // TODO if we don't rethrow we should provide a result object with a warning Msg.
       }
+   }
+
+   @Override
+   public byte[] append(Invoice invoice, InputStream inputStreamPdf) {
+      return null;
    }
 }
