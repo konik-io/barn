@@ -32,6 +32,7 @@ import org.junit.Test;
 @SuppressWarnings("javadoc")
 public class ITextPdfInvoiceExtractorTest {
 
+   private static final String PDF_INVOICE_LOCATION = "/Musterrechnung_Einfach.pdf";
    ITextPdfInvoiceExtractor invoiceExtractor;
 
    @Before
@@ -42,7 +43,7 @@ public class ITextPdfInvoiceExtractorTest {
    @Test
    public void extractByteArray() throws Exception {
       //setup
-      URL resource = getClass().getResource("/Beispielrechnung_ZUGFeRD_RC_COMFORT.pdf");
+      URL resource = getClass().getResource(PDF_INVOICE_LOCATION);
       byte[] pdf = new byte[resource.openConnection().getContentLength()];
       DataInputStream dataIs = new DataInputStream(resource.openStream());
       dataIs.readFully(pdf);
@@ -58,7 +59,7 @@ public class ITextPdfInvoiceExtractorTest {
    @Test
    public void extractInputStream() {
       //setup
-      InputStream pdfStream = getClass().getResourceAsStream("/Beispielrechnung_ZUGFeRD_RC_COMFORT.pdf");
+      InputStream pdfStream = getClass().getResourceAsStream(PDF_INVOICE_LOCATION);
 
       //exec
       Invoice invoice = invoiceExtractor.extract(pdfStream);

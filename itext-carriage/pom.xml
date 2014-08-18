@@ -9,7 +9,7 @@
       <version>0.6.0-SNAPSHOT</version>
    </parent>
    <properties>
-      <itext.lib>5.5.1</itext.lib>
+      <itext.lib>5.5.2</itext.lib>
    </properties>
 
    <dependencies>

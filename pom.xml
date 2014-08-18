@@ -71,10 +71,6 @@
       <sonar.host.url>http://sonar.konik.io</sonar.host.url>
    </properties>
 
-
-
-
-
    <build>
       <pluginManagement>
          <plugins>
@@ -331,13 +327,13 @@
          <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-core</artifactId>
-            <version>0.9.3</version>
+            <version>0.9.7</version>
             <scope>provided</scope>
          </dependency>
          <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-generator-annprocess</artifactId>
-            <version>0.9.3</version>
+            <version>0.9.7</version>
             <scope>provided</scope>
          </dependency>
       </dependencies>

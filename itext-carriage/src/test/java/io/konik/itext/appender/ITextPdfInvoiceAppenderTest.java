@@ -34,7 +34,13 @@ import com.google.common.io.Files;
 
 @SuppressWarnings("javadoc")
 public class ITextPdfInvoiceAppenderTest {
-
+   
+   private static final String MUSTERRECHNUNG_EINFACH_XML = "/Musterrechnung_Einfach.xml";
+   private static final String ACME_INVOICE_42_PDF = "/acme_invoice-42.pdf";
+   
+   private static final String TARGET_ACME_INVOICE_42_PDF = "target/acme_invoice-42.pdf";
+   private static final String TARGET_ACME_INVOICE_42_RANDOM_PDF = "target/acme_invoice-42_random.pdf";
+   
    InvoiceAppender appender;
    InputStream isPdf;
    InputStream isXml;
@@ -44,9 +50,8 @@ public class ITextPdfInvoiceAppenderTest {
    @Before
    public void setUp() throws Exception {
       appender = new ITextPdfInvoiceAppender();
-      isPdf = getClass().getResourceAsStream("/acme_invoice-42.pdf");
-      isXml = getClass().getResourceAsStream("/Musterrechnung_Einfach.xml");
-      isRandomXml = getClass().getResourceAsStream("/zf_random_invoice.xml");
+      isPdf = getClass().getResourceAsStream(ACME_INVOICE_42_PDF);
+      isXml = getClass().getResourceAsStream(MUSTERRECHNUNG_EINFACH_XML);
    }
 
    @Test
@@ -56,17 +61,17 @@ public class ITextPdfInvoiceAppenderTest {
       byte[] outPdf = appender.append(invoice, pdfInput);
       assertThat(outPdf).isNotNull();
 
-      Files.write(outPdf , new File("target/acme_invoice-42.pdf"));
+      Files.write(outPdf , new File(TARGET_ACME_INVOICE_42_PDF));
    }
 
    @Test
    public void appendInputStream_random() throws Exception {
-      Invoice invoice = transformer.toModel(isRandomXml);
+      Invoice invoice = transformer.toModel(isXml);
       byte[] pdfInput = toByteArray(isPdf);
       byte[] outPdf = appender.append(invoice, pdfInput);
       assertThat(outPdf).isNotNull();
 
-      Files.write(outPdf , new File("target/acme_invoice-42_random.pdf"));
+      Files.write(outPdf , new File(TARGET_ACME_INVOICE_42_RANDOM_PDF));
    }
    
    @Test

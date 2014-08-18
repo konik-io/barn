@@ -30,13 +30,13 @@ import io.konik.itext.xmp.XmpAppender;
 import io.konik.itext.xmp.ZfXmpInfo;
 import io.konik.zugferd.Invoice;
 import io.konik.zugferd.entity.Parameter;
+import io.konik.zugferd.profile.Profile;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -163,7 +163,7 @@ public class ITextPdfInvoiceAppender implements InvoiceAppender {
    }
 
    private void appendZfContentToXmp(PdfAStamper stamper, Invoice invoice) throws IOException {
-      Parameter profile = invoice.getContext().getGuideline();
+      Profile profile = invoice.getContext().getGuideline();
       ZfXmpInfo info = new ZfXmpInfo(profile, ZF_FILE_NAME, INVOICE);
       try {
          byte[] newXmpMetadata = xmp.append(stamper.getReader().getMetadata(), info);
