@@ -69,6 +69,7 @@
       <java.version>1.6</java.version>
       <sonar.language>java</sonar.language>
       <sonar.host.url>http://sonar.konik.io</sonar.host.url>
+      <sonar.exclusions>target/generated-sources/**</sonar.exclusions>
    </properties>
 
    <build>
