@@ -20,6 +20,7 @@ package io.konik.itext.xmp;
 
 import static io.konik.util.Strings.isNullOrEmpty;
 import io.konik.zugferd.profile.Profile;
+import io.konik.zugferd.profile.ProfileVersion;
 
 /**
  * ZUGFeRD XMP Info object represents the ZUGFeRD meta data which a part of the PDF/A XMP extension.
@@ -60,10 +61,10 @@ public class ZfXmpInfo {
     * @param documentType the document type
     */
    public ZfXmpInfo(Profile profile, String documentFileName, String documentType) {
-      this.conformanceLevel = profile.getSimpleName();
+      this.conformanceLevel = profile.getConformanceLevel();
       this.documentFileName = documentFileName;
       this.documentType = documentType;
-      this.version = profile.getVersion();
+      this.version = ProfileVersion.latestVersion().version();
    }
 
    /**

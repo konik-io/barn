@@ -30,8 +30,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Test;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
@@ -55,22 +55,22 @@ public class ITextPdfInvoiceAppenderBenchmark extends DefaultBenchmark {
      pdf = toByteArray(getClass().getResourceAsStream("/acme_invoice-42.pdf"));
    }
 
-   @GenerateMicroBenchmark
+   @Benchmark
    public void append_witStreams() throws Exception {
-      Invoice invoice = transformer.from(getClass().getResourceAsStream("/ZUGFeRD-invoice.xml"));
+      Invoice invoice = transformer.toModel(getClass().getResourceAsStream("/ZUGFeRD-invoice.xml"));
       appender.append(invoice, getClass().getResourceAsStream("/acme_invoice-42.pdf"), new ByteArrayOutputStream());
    }
    
-   @GenerateMicroBenchmark
+   @Benchmark
    @Threads(4)
    public void append_witStreamsAndThreads() throws Exception {
-      Invoice invoice = transformer.from(getClass().getResourceAsStream("/ZUGFeRD-invoice.xml"));
+      Invoice invoice = transformer.toModel(getClass().getResourceAsStream("/ZUGFeRD-invoice.xml"));
       appender.append(invoice, getClass().getResourceAsStream("/acme_invoice-42.pdf"), new ByteArrayOutputStream());
    }
    
-   @GenerateMicroBenchmark
+   @Benchmark
    public void append_withByteArray() throws Exception {
-      Invoice invoice = transformer.from(getClass().getResourceAsStream("/ZUGFeRD-invoice.xml"));
+      Invoice invoice = transformer.toModel(getClass().getResourceAsStream("/ZUGFeRD-invoice.xml"));
       appender.append(invoice, pdf);
    }
    

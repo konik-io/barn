@@ -18,8 +18,8 @@
  */
 package io.konik.itext.xmp;
 
-import static io.konik.itext.xmp.XmpZfNs.ZF_NS_ALT;
 import static io.konik.itext.xmp.XmpZfNs.ZF_NS;
+import static io.konik.itext.xmp.XmpZfNs.ZF_NS_ALT;
 import io.konik.exception.TransformationWarning;
 
 import java.io.ByteArrayInputStream;

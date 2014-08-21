@@ -1,27 +1,28 @@
-/*
- * Copyright (C) 2014 konik.io
+/* Copyright (C) 2014 konik.io
  *
- * This file is part of Konik library.
+ * This file is part of the Konik library.
  *
- * Konik library is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * The Konik library is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * Konik library is distributed in the hope that it will be useful,
+ * The Konik library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with Konik library.  If not, see <http://www.gnu.org/licenses/>.
+ * along with the Konik library. If not, see <http://www.gnu.org/licenses/>.
  */
 package io.konik.zugferd.unqualified;
 
+import io.konik.jaxb.adapter.QuantityRoundingAdapter;
 import io.konik.zugferd.unece.codes.UnitOfMeasurement;
 
 import java.math.BigDecimal;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -32,9 +33,9 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * = The Quantity 
+ * = The Quantity
  * 
- * Defined by the amount and Unit 
+ * Defined by the amount and Unit
  * 
  * Units are based on Recommendation N°. 20 - Codes for Units of Measure Used in International Trade
  */
@@ -43,6 +44,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class Quantity {
 
    @XmlValue
+   @NotNull
+   @XmlJavaTypeAdapter(QuantityRoundingAdapter.class)
    private BigDecimal value;
 
    @XmlAttribute(name = "unitCode")
@@ -51,7 +54,20 @@ public class Quantity {
    private String unitCode;
 
    /** Instantiates a new quantity. */
-   public Quantity() {}
+   public Quantity() {
+   }
+
+   /**
+    * Instantiates a new quantity.
+    *
+    * @param value the value
+    * @param unitCode the unit code
+    */
+   public Quantity(int value, String unitCode) {
+      super();
+      this.value = BigDecimal.valueOf(value);
+      this.unitCode = unitCode;
+   }
 
    /**
     * Instantiates a new quantity.
@@ -76,7 +92,19 @@ public class Quantity {
       this.value = value;
       this.unitCode = unit.getCode();
    }
-   
+
+   /**
+    * Instantiates a new quantity.
+    *
+    * @param value the integer value
+    * @param unit the unit
+    */
+   public Quantity(int value, UnitOfMeasurement unit) {
+      super();
+      this.value = BigDecimal.valueOf(value);
+      this.unitCode = unit.getCode();
+   }
+
    /**
     * Gets the value.
     * 
@@ -88,28 +116,30 @@ public class Quantity {
 
    /**
     * Sets the value.
-    * 
+    *
     * @param value the new value
+    * @return the quantity
     */
-   public void setValue(BigDecimal value) {
+   public Quantity setValue(BigDecimal value) {
       this.value = value;
+      return this;
    }
-   
+
    /**
     * Gets the unit.
     *
     * @return the unit or null if unit is not known.
     */
-   public UnitOfMeasurement getUnit(){
+   public UnitOfMeasurement getUnit() {
       return UnitOfMeasurement.getByCode(unitCode);
    }
-   
+
    /**
     * Sets the unit.
     *
     * @param unit the new unit
     */
-   public void setUnit(UnitOfMeasurement unit){
+   public void setUnit(UnitOfMeasurement unit) {
       unitCode = unit.getCode();
    }
 

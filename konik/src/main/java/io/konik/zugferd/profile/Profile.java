@@ -1,129 +1,153 @@
-/*
- * Copyright (C) 2014 konik.io
+/* Copyright (C) 2014 konik.io
  *
- * This file is part of Konik library.
+ * This file is part of the Konik library.
  *
- * Konik library is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * The Konik library is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * Konik library is distributed in the hope that it will be useful,
+ * The Konik library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with Konik library.  If not, see <http://www.gnu.org/licenses/>.
+ * along with the Konik library. If not, see <http://www.gnu.org/licenses/>.
  */
 package io.konik.zugferd.profile;
 
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 /**
- * The ZUGFeRD full Profile Name
- * 
- * Construction schema. namespace:version:[basic, comfort or extended]
- * 
- * Example:: urn:ferd:invoice:rce:extended
- * 
+ * The latest Version Invoice Profiles.
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DocumentContextParameterType", propOrder = { "id" })
-public class Profile {
+public enum Profile {
 
-   @NotNull
-   @XmlElement(name = "ID")
-   @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-   private final String id;
-   
+   /** The basic profile */
+   BASIC,
+   /** The comfort profile */
+   COMFORT,
+   /** The extended profile */
+   EXTENDED;
+
+   private static final String DELIMITED = ":";
+   private static final String NS = "urn:ferd:CrossIndustryDocument:invoice";
+
    /**
-    * Instantiates a new profile.
+    * Instantiates a new profile type.
     */
    Profile() {
-      this.id = null;
    }
-   
+
    /**
-    * Instantiates a new profile.
+    * Gets the full name with the latest version.
+    * 
+    * Full name consists of namespace:version:profile
+    * 
+    * Example:: urn:ferd:CrossIndustryDocument:invoice:1p0:basic
+    *
+    * @return the full name
+    */
+   public String fullName() {
+      return fullName(ProfileVersion.latestVersion());
+   }
+
+   /**
+    * constructs the full name with the given version.
+    * Full name consists of namespace:version:profile
+    * 
+    * Example:: urn:ferd:CrossIndustryDocument:invoice:1p0:basic
+    *
+    * @param version the version
+    * @return the string the full name
+    */
+   public String fullName(ProfileVersion version) {
+      StringBuilder fullName = new StringBuilder();
+      fullName.append(NS).append(DELIMITED).append(version.version()).append(DELIMITED).append(simpleName());
+      return fullName.toString();
+   }
+
+   /**
+    * Gets the simple name.
+    * 
+    * Simple may be basic, comfort or extended.
+    * 
+    * Example:: basic, comfort, extended
+    * 
+    * @return the simple name basic, comfort or extended.
+    */
+   public String simpleName() {
+      return name().toLowerCase();
+   }
+
+   /**
+    * Gets the conformance level.
+    * 
+    * Is the {@link #simpleName()} in capital or {@link #name()}
+    * 
+    * Example:: BASIC, COMFORT, EXTENDED
+    * 
+    * @see #simpleName()
+    * @return the conformance level
+    */
+   public String getConformanceLevel() {
+      return name();
+   }
+
+   /**
+    * Get a profile by full name.
     *
     * @param fullName the full name
+    * @return the profile
     */
-   public Profile(String fullName) {
-      this.id = fullName;
+   public static Profile getProfile(String fullName) {
+      for (Profile v : values()) {
+         ProfileVersion version = ProfileVersion.extractVersion(fullName);
+         if (v.fullName(version).equals(fullName)) { return v; }
+      }
+      throw new EnumConstantNotPresentException(Profile.class, fullName);
    }
 
    /**
-    * Instantiates a new profile.
+    * Gets the profile by name.
     *
-    * @param type the type
+    * @param name the simple name
+    * @return the profile by name case independent
     */
-   public Profile(ProfileType type) {
-      this.id = type.fullName;
+   public static Profile getProfileByName(String name) {
+      for (Profile v : values()) {
+         if (v.simpleName().equalsIgnoreCase(name)) { return v; }
+      }
+      throw new EnumConstantNotPresentException(Profile.class, name);
    }
 
    /**
-    * Gets the profile name.
-
-    * e.g. urn:ferd:invoice:rc:basic
+    * Checks if is basic.
     *
-    * @return the full profile name
-    */
-   public String getFullName() {
-      return id;
-   }
-   
-   /**
-    * Gets the simple name of the profile
-
-    * e.g basic,comfort or extended.
-    *
-    * @return the simple name of the profile
-    */
-   public String getSimpleName() {
-      return id.substring(id.lastIndexOf(':'));
-   }
-   
-   /**
-    * Checks if profile is basic.
-    *
+    * @param fullName the full name
     * @return true, if is basic
     */
-   public boolean isBasic() {
-      return ProfileType.isBasic(id);
+   public static boolean isBasic(String fullName) {
+      return fullName.endsWith(BASIC.simpleName());
    }
-   
+
    /**
-    * Checks if profile is comfort.
+    * Checks if is comfort.
     *
+    * @param fullName the full name
     * @return true, if is comfort
     */
-   public boolean isComfort() {
-      return ProfileType.isComfort(id);
+   public static boolean isComfort(String fullName) {
+      return fullName.endsWith(COMFORT.simpleName());
    }
-   
+
    /**
-    * Checks if profile is extended.
+    * Checks if is extended.
     *
+    * @param fullName the full name
     * @return true, if is extended
     */
-   public boolean isExtended() {
-      return ProfileType.isExtended(id);
-   }
-   
-   /**
-    * Gets the version of the invoice.
-    *
-    * @return the version of the underlying invoice.
-    */
-   public String getVersion() {
-      return ProfileType.extractVersion(id);
+   public static boolean isExtended(String fullName) {
+      return fullName.endsWith(EXTENDED.simpleName());
    }
 
 }

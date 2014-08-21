@@ -24,13 +24,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openjdk.jmh.annotations.Mode.Throughput;
 import static org.openjdk.jmh.annotations.Scope.Thread;
 import io.konik.InvoiceTransformer;
+import io.konik.utils.InvoiceLoaderUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.junit.Test;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
@@ -47,17 +49,18 @@ public class InvoiceTransformerBenchmark extends DefaultBenchmark {
    
    @Setup
    public void setup() throws IOException {
-      invoice = toByteArray(getClass().getResourceAsStream("/ZUGFeRD-invoice.xml"));
+      InputStream is = getClass().getResourceAsStream(InvoiceLoaderUtils.ZF_MUSTERRECHNUNG_EINFACH_XML);
+      invoice = toByteArray(is);
       assertThat(invoice).isNotNull();
    }
 
-   @GenerateMicroBenchmark
-   public void from_inputStream() throws Exception {
-      transformer.from(new ByteArrayInputStream(invoice));
+   @Benchmark
+   public void xmlToModel() throws Exception {
+      transformer.toModel(new ByteArrayInputStream(invoice));
    }
    
    @Test
-   public void benchmark_iTextPdfInvoiceAppender() throws RunnerException {
+   public void xmlToModel_Test() throws RunnerException {
       runDefault();
    }
 

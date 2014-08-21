@@ -1,30 +1,36 @@
-/*
- * Copyright (C) 2014 konik.io
+/* Copyright (C) 2014 konik.io
  *
- * This file is part of Konik library.
+ * This file is part of the Konik library.
  *
- * Konik library is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * The Konik library is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * Konik library is distributed in the hope that it will be useful,
+ * The Konik library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with Konik library.  If not, see <http://www.gnu.org/licenses/>.
+ * along with the Konik library. If not, see <http://www.gnu.org/licenses/>.
  */
 package io.konik.zugferd.entity;
 
-import io.konik.zugferd.qualified.DateTime;
-import io.konik.zugferd.unece.codes.DocumentNameCode;
+import static java.util.Collections.addAll;
+import io.konik.jaxb.adapter.PeriodCompleteToDateTimeAdapter;
+import io.konik.validator.annotation.Extended;
+import io.konik.validator.annotation.NotEmpty;
+import io.konik.validator.annotation.NullableNotBlank;
+import io.konik.zugferd.unece.codes.DocumentCode;
+import io.konik.zugferd.unqualified.Indicator;
+import io.konik.zugferd.unqualified.ZfDate;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -32,29 +38,52 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.neovisionaries.i18n.LanguageCode;
+
 /**
  * = The Invoice Document Header
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ExchangedDocumentType", propOrder = { "invoiceNumber", "name", "code", "issued", "notes" })
+@XmlType(name = "HeaderExchangedDocument", propOrder = { "invoiceNumber", "name", "code", "issued", "copy", "languages",
+      "notes", "contractualDueDate" })
 public class Header {
-   
+
+   @NotNull
+   @NullableNotBlank
    @XmlElement(name = "ID")
    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
    private String invoiceNumber;
 
+   @NotNull
+   @NullableNotBlank
    @XmlElement(name = "Name")
-   private List<String> name;
+   private String name;
 
+   @NotNull
    @XmlElement(name = "TypeCode")
-   private DocumentNameCode code;
+   private DocumentCode code;
 
    @XmlElement(name = "IssueDateTime")
+   @NotNull
    @Valid
-   private DateTime issued;
+   private ZfDate issued;
 
+   @XmlElement(name = "CopyIndicator")
+   private Indicator copy;
+
+   @XmlElement(name = "LanguageID")
+   private List<LanguageCode> languages;
+
+   @Valid
+   @NotEmpty
    @XmlElement(name = "IncludedNote")
    private List<Note> notes;
+
+   @Valid
+   @Extended
+   @XmlElement(name = "EffectiveSpecifiedPeriod")
+   @XmlJavaTypeAdapter(value = PeriodCompleteToDateTimeAdapter.class)
+   private ZfDate contractualDueDate;
 
    /**
     * Gets the invoice number.
@@ -93,10 +122,7 @@ public class Header {
     * 
     * @return the invoice name
     */
-   public List<String> getName() {
-      if (name == null) {
-         name = new ArrayList<String>();
-      }
+   public String getName() {
       return this.name;
    }
 
@@ -106,16 +132,15 @@ public class Header {
     * Profile:: BASIC
     * 
     * Example:: {@code invoice, credit advice, debit note, pro forma invoice}
-    * 
-    * @param additionalName the additional invoice name
+    *
+    * @param name the new name
     * @return the exchanged document
     * @see #getName()
     */
-   public Header addName(String additionalName) {
-      getName().add(additionalName);
+   public Header setName(String name) {
+      this.name = name;
       return this;
    }
-
 
    /**
     * Gets +UNCL 1001+ Document Name Code.
@@ -127,10 +152,10 @@ public class Header {
     * @return the document name code
     * @see http://www.unece.org/trade/untdid/d13b/tred/tred1001.htm[UN/EDIFACT 1001 Document name coe^]
     */
-   public DocumentNameCode getCode() {
+   public DocumentCode getCode() {
       return code;
    }
-   
+
    /**
     * Sets the +UNCL 1001+ Document Name Code.
     * 
@@ -143,11 +168,10 @@ public class Header {
     * @see http://www.unece.org/trade/untdid/d13b/tred/tred1001.htm[UN/EDIFACT 1001 Document name coe^]
     */
 
-   public Header setCode(DocumentNameCode code) {
+   public Header setCode(DocumentCode code) {
       this.code = code;
       return this;
    }
-   
 
    /**
     * Gets the invoice issue date time.
@@ -157,7 +181,7 @@ public class Header {
     * 
     * @return the issue date time
     */
-   public DateTime getIssued() {
+   public ZfDate getIssued() {
       return issued;
    }
 
@@ -170,24 +194,62 @@ public class Header {
     * @param issued the new issue date time
     * @return the exchanged document
     */
-   public Header setIssued(DateTime issued) {
+   public Header setIssued(ZfDate issued) {
       this.issued = issued;
       return this;
    }
 
    /**
+    * Checks if is copy.
+    *
+    * @return the indicator
+    */
+   public boolean isCopy() {
+      return copy.getIndicator();
+   }
+
+   /**
+    * Sets the copy.
+    *
+    * @param copy the new copy
+    */
+   public void setCopy(boolean copy) {
+      this.copy = new Indicator(copy);
+   }
+
+   /**
+    * Gets the languages.
+    *
+    * @return the languages
+    */
+   public List<LanguageCode> getLanguages() {
+      if (languages == null) {
+         languages = new ArrayList<LanguageCode>();
+      }
+      return languages;
+   }
+
+   /**
+    * Adds the language.
+    *
+    * @param language the language
+    */
+   public void addLanguage(LanguageCode language) {
+      getLanguages().add(language);
+   }
+
+   /**
     * Gets the invoice header notes.
     * 
-    * Profile:: 
+    * Profile::
     * - {@link Note#getContent()}: BASIC
     * - {@link Note#getSubjectCode()}: COMFORT
     * 
-    * Example:: 
-    * {@code note content: }{@link Note#getContent() Invoice like agreed on the telephone with Mr.X.}
+    * Example:: {@code note content: }{@link Note#getContent() Invoice like agreed on the telephone with Mr.X.}
     * 
-    * Example:: 
-    * - {@code note content: }{@link Note#getContent() Invoice like agreed on the telephone with Mr.X.}
-    * - {@code note subject code as UNCL 4451: }{@link Note#getSubjectCode() AAK}
+    * Example::
+    * - {@code note content: }{@link Note#getContent() Invoice like agreed on the telephone with Mr.X.} -
+    * {@code note subject code as UNCL 4451: }{@link Note#getSubjectCode() AAK}
     * 
     * @return the included note
     */
@@ -201,20 +263,39 @@ public class Header {
    /**
     * Adds a invoice header note.
     * 
-    * Profile:: 
+    * Profile::
     * - {@link Note#getContent()}: BASIC
     * - {@link Note#getSubjectCode()}: COMFORT
     * 
-    * Example:: 
-    * - {@code note content: }{@link Note#getContent() Invoice like agreed on the telephone with Mr.X.}
-    * - {@code note subject code as UNCL 4451: }{@link Note#getSubjectCode() AAK}
-    * 
-    * 
-    * @param note the note
-    * @return the exchanged document
+    * Example::
+    * - {@code note content: }{@link Note#getContent() Invoice like agreed on the telephone with Mr.X.} -
+    * {@code note subject code as UNCL 4451: }{@link Note#getSubjectCode() AAK}
+    *
+    * @param additionalNote the additional note
+    * @return the header
     */
-   public Header addNote(Note note) {
-      getNotes().add(note);
+   public Header addNote(Note... additionalNote) {
+      addAll(getNotes(), additionalNote);
+      return this;
+   }
+
+   /**
+    * Gets the contractual due date.
+    *
+    * @return the contractual due date
+    */
+   public ZfDate getContractualDueDate() {
+      return contractualDueDate;
+   }
+
+   /**
+    * Sets the contractual due date.
+    *
+    * @param contractualDueDate the contractual due date
+    * @return the header
+    */
+   public Header setContractualDueDate(ZfDate contractualDueDate) {
+      this.contractualDueDate = contractualDueDate;
       return this;
    }
 

@@ -21,12 +21,11 @@ package io.konik.zugferd.entity;
 import io.konik.zugferd.unqualified.ID;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
@@ -37,8 +36,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * 
  * Applies to a buyer, seller, order recipient or invoice recipient.
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TradePartyType", propOrder = { "id", "globalId", "name", "contact", "address", "taxRegistration" })
+@XmlType(name = "TradePartyType", propOrder = { "id", "globalId", "name", "contact", "address", "taxRegistrations" })
 public class TradeParty {
 
    /** The vendor number or customer number */
@@ -68,7 +66,7 @@ public class TradeParty {
    /** The tax registration. */
    @Valid
    @XmlElement(name = "SpecifiedTaxRegistration")
-   private List<TaxRegistration> taxRegistration;
+   private List<TaxRegistration> taxRegistrations;
 
    /**
     * Gets the id.
@@ -103,8 +101,8 @@ public class TradeParty {
     * Profile:: COMFORT when part of Trade.agreements.seller
     * 
     * Example::
-    * - {@link ID#getValue()} {@code  GENODED1SPK, 4000001000005 }
-    * - {@link ID#getSchemeId()} the ISO 6523 code {@code 0021, 0088, 0060, 0177 }
+    * - {@link ID#getValue()} {@code  GENODED1SPK, 4000001000005 } - {@link ID#getSchemeId()} the ISO 6523 code
+    * {@code 0021, 0088, 0060, 0177 }
     * 
     * @return the global id
     */
@@ -116,13 +114,13 @@ public class TradeParty {
    }
 
    /**
-    * Adds the global id. 
+    * Adds the global id.
     * 
     * Profile:: COMFORT when part of Trade.agreements.seller
     * 
     * Example::
-    * - {@link ID#getValue()} {@code  GENODED1SPK, 4000001000005 }
-    * - {@link ID#getSchemeId()} the ISO 6523 code {@code 0021, 0088, 0060, 0177 }
+    * - {@link ID#getValue()} {@code  GENODED1SPK, 4000001000005 } - {@link ID#getSchemeId()} the ISO 6523 code
+    * {@code 0021, 0088, 0060, 0177 }
     * 
     * @param additionalGlobalId the additional global id
     * @return the trade party
@@ -220,11 +218,11 @@ public class TradeParty {
     * 
     * @return the specified tax registration
     */
-   public List<TaxRegistration> getTaxRegistration() {
-      if (taxRegistration == null) {
-         taxRegistration = new ArrayList<TaxRegistration>();
+   public List<TaxRegistration> getTaxRegistrations() {
+      if (taxRegistrations == null) {
+         taxRegistrations = new ArrayList<TaxRegistration>();
       }
-      return this.taxRegistration;
+      return this.taxRegistrations;
    }
 
    /**
@@ -236,8 +234,8 @@ public class TradeParty {
     * @param additionalTaxRegistration an additional Tax Registration
     * @return the trade party
     */
-   public TradeParty addTaxRegistration(TaxRegistration additionalTaxRegistration) {
-      getTaxRegistration().add(additionalTaxRegistration);
+   public TradeParty addTaxRegistrations(TaxRegistration... additionalTaxRegistration) {
+      Collections.addAll(getTaxRegistrations(), additionalTaxRegistration);
       return this;
    }
 

@@ -65,7 +65,7 @@ public enum UnitOfMeasurement {
    MINUTE("MIN", "Minute (min)"),
 
    /** The square millimeter (mm2). */
-   MILLIMETER_SQUARE("MMK,", "square millimeter (mm2)"),
+   MILLIMETER_SQUARE("MMK", "square millimeter (mm2)"),
 
    /** The Millimeter (mm). */
    MILLIMETER("MMT", "Millimeter (mm)"),
@@ -77,7 +77,7 @@ public enum UnitOfMeasurement {
    METER_CUBIC("MTQ", "cubic meter (m3)"),
 
    /** The Meter (m). */
-   METER("MTR,", "Meter (m)"),
+   METER("MTR", "Meter (m)"),
 
    /** The Second (s). */
    SECOND("SEC", "Second (s)"),
@@ -97,8 +97,8 @@ public enum UnitOfMeasurement {
    /** The Month. */
    MONTH("MON", "Month");
 
-   /** The description. */
-   public final String description;
+   private final String description;
+   private final String code;
 
    /**
     * Instantiates a new unit types.
@@ -107,18 +107,19 @@ public enum UnitOfMeasurement {
     * @param description the description
     */
    UnitOfMeasurement(String code, String description) {
+      this.code = code;
       this.description = description;
    }
-   
+
    /**
     * Gets the code.
     *
     * @return the code
     */
    public String getCode() {
-      return name();
+      return code;
    }
-   
+
    /**
     * Gets the description.
     *
@@ -136,11 +137,11 @@ public enum UnitOfMeasurement {
     */
    public static UnitOfMeasurement getByCode(String code) {
       for (UnitOfMeasurement v : values()) {
-         if (v.name().intern() == code.intern()) return v;
+         if (v.getCode().intern() == code.intern()) { return v; }
       }
       return null;
    }
-   
+
    @Override
    public String toString() {
       return new StringBuilder().append("[").append(getCode()).append("] ").append(description).toString();
