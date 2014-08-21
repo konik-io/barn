@@ -29,7 +29,6 @@ import io.konik.harness.InvoiceAppender;
 import io.konik.itext.xmp.XmpAppender;
 import io.konik.itext.xmp.ZfXmpInfo;
 import io.konik.zugferd.Invoice;
-import io.konik.zugferd.entity.Parameter;
 import io.konik.zugferd.profile.Profile;
 
 import java.io.ByteArrayInputStream;

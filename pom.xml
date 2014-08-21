@@ -8,7 +8,12 @@
    <artifactId>parent</artifactId>
    <version>0.6.0-SNAPSHOT</version>
    <packaging>pom</packaging>
-
+   
+   <name>Konik parent</name>
+   <description>Konik Library parent pom and configuration</description>
+   <url>http://konik.io</url>
+   <inceptionYear>2014</inceptionYear>
+   
    <parent>
       <groupId>org.sonatype.oss</groupId>
       <artifactId>oss-parent</artifactId>
@@ -21,9 +26,6 @@
       <module>distribution</module>
    </modules>
 
-   <name>Konik parent pom</name>
-   <description>Konik Library common setting.</description>
-   <url>http://konik.io</url>
 
    <licenses>
       <license>
@@ -38,7 +40,7 @@
       <url>http://konik.io</url>
    </organization>
 
-   <inceptionYear>2014</inceptionYear>
+   
 
    <developers>
       <developer>
