@@ -6,7 +6,7 @@
    <parent>
       <groupId>io.konik</groupId>
       <artifactId>parent</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
+      <version>0.7.0</version>
    </parent>
    <properties>
       <itext.lib>5.5.2</itext.lib>
@@ -16,7 +16,7 @@
       <dependency>
          <groupId>io.konik</groupId>
          <artifactId>konik</artifactId>
-         <version>0.6.0-SNAPSHOT</version>
+         <version>0.7.0</version>
       </dependency>
       <!-- PDF libs -->
       <dependency>
