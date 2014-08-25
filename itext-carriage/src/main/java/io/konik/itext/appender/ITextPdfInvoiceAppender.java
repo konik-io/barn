@@ -29,7 +29,7 @@ import io.konik.harness.InvoiceAppender;
 import io.konik.itext.xmp.XmpAppender;
 import io.konik.itext.xmp.ZfXmpInfo;
 import io.konik.zugferd.Invoice;
-import io.konik.zugferd.profile.Profile;
+import io.konik.zugferd.profile.ConformanceLevel;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -162,7 +162,7 @@ public class ITextPdfInvoiceAppender implements InvoiceAppender {
    }
 
    private void appendZfContentToXmp(PdfAStamper stamper, Invoice invoice) throws IOException {
-      Profile profile = invoice.getContext().getGuideline();
+      ConformanceLevel profile = invoice.getContext().getGuideline().getConformanceLevel();
       ZfXmpInfo info = new ZfXmpInfo(profile, ZF_FILE_NAME, INVOICE);
       try {
          byte[] newXmpMetadata = xmp.append(stamper.getReader().getMetadata(), info);
