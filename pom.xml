@@ -265,7 +265,7 @@
             <artifactId>license-maven-plugin</artifactId>
             <version>2.6</version>
             <configuration>
-               <header>../project/license/license-file-header.txt</header>
+<!--                <header>../project/license/license-file-header.txt</header> -->
                <mapping>
                   <java>SLASHSTAR_STYLE</java>
                </mapping>
