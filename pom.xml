@@ -20,13 +20,6 @@
    <url>http://konik.io</url>
    <inceptionYear>2014</inceptionYear>
 
-   <modules>
-      
-      
-      <module>distribution</module>
-   </modules>
-
-
    <licenses>
       <license>
          <name>AGPL</name>
