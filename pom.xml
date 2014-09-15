@@ -1,7 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <prerequisites>
-      <maven>3.0</maven>
+      <maven>3.0.2</maven>
    </prerequisites>
 
    <groupId>io.konik</groupId>
@@ -73,12 +74,12 @@
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-install-plugin</artifactId>
-               <version>2.4</version>
+               <version>2.5.1 </version>
             </plugin>
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-dependency-plugin</artifactId>
-               <version>2.5.1</version>
+               <version>2.8</version>
             </plugin>
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
@@ -93,12 +94,12 @@
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-shade-plugin</artifactId>
-               <version>2.0</version>
+               <version>2.2</version>
             </plugin>
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-jar-plugin</artifactId>
-               <version>2.3.1</version>
+               <version>2.4</version>
                <configuration>
                   <archive>
                      <manifest>
@@ -150,17 +151,17 @@
             <plugin>
                <groupId>org.codehaus.mojo</groupId>
                <artifactId>sonar-maven-plugin</artifactId>
-               <version>2.3</version>
+               <version>2.4</version>
             </plugin>
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-deploy-plugin</artifactId>
-               <version>2.7</version>
+               <version>2.8.1</version>
             </plugin>
             <plugin>
                <groupId>org.codehaus.mojo</groupId>
                <artifactId>cobertura-maven-plugin</artifactId>
-               <version>2.5.2</version>
+               <version>2.6</version>
             </plugin>
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
@@ -172,11 +173,6 @@
                   <wtpversion>2.0</wtpversion>
                   <ajdtVersion>1.5</ajdtVersion>
                </configuration>
-            </plugin>
-            <plugin>
-               <groupId>org.jvnet.jax-ws-commons</groupId>
-               <artifactId>jaxws-maven-plugin</artifactId>
-               <version>2.2</version>
             </plugin>
             <plugin>
                <groupId>org.jvnet.jaxb2.maven2</groupId>
@@ -192,11 +188,6 @@
                <groupId>maven-site-plugin</groupId>
                <artifactId>maven-site-plugin</artifactId>
                <version>3.4</version>
-            </plugin>
-            <plugin>
-               <groupId>org.codehaus.mojo</groupId>
-               <artifactId>aspectj-maven-plugin</artifactId>
-               <version>1.4</version>
             </plugin>
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
@@ -216,14 +207,14 @@
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-assembly-plugin</artifactId>
-               <version>2.4</version>
+               <version>2.4.1</version>
             </plugin>
          </plugins>
       </pluginManagement>
 
       <plugins>
          <plugin>
-            <!-- verifies our code is compatible with java 1.5 -->
+            <!-- verifies our code is compatible with java 1.6 -->
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>animal-sniffer-maven-plugin</artifactId>
             <version>1.9</version>
@@ -247,9 +238,14 @@
                <docletArtifact>
                   <groupId>org.asciidoctor</groupId>
                   <artifactId>asciidoclet</artifactId>
-                  <version>0.1.3</version>
+                  <version>1.5.0</version>
                </docletArtifact>
-               <!-- <additionalparam>-include-basedir ${project.basedir}</additionalparam> -->
+               <additionalparam>
+                  --base-dir ${project.basedir}
+                  --attribute "name=${project.name}"
+                  --attribute "version=${project.version}"
+                  --attribute "title-link=http://konik.io[${project.name} ${project.version}]"
+               </additionalparam>
                <linksource>true</linksource>
             </configuration>
          </plugin>
@@ -258,7 +254,7 @@
             <artifactId>license-maven-plugin</artifactId>
             <version>2.6</version>
             <configuration>
-<!--                <header>../project/license/license-file-header.txt</header> -->
+               <!-- <header>../project/license/license-file-header.txt</header> -->
                <mapping>
                   <java>SLASHSTAR_STYLE</java>
                </mapping>
