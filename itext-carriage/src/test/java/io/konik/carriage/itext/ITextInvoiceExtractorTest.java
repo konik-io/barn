@@ -16,57 +16,38 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Konik library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.konik.itext.extractor;
+package io.konik.carriage.itext;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import io.konik.harness.InvoiceExtractionError;
-import io.konik.zugferd.Invoice;
+import io.konik.harness.exception.InvoiceExtractionError;
 
-import java.io.DataInputStream;
 import java.io.InputStream;
-import java.net.URL;
 
 import org.junit.Before;
 import org.junit.Test;
 
 @SuppressWarnings("javadoc")
-public class ITextPdfInvoiceExtractorTest {
+public class ITextInvoiceExtractorTest {
 
    private static final String PDF_INVOICE_LOCATION = "/Musterrechnung_Einfach.pdf";
-   ITextPdfInvoiceExtractor invoiceExtractor;
+   ITextInvoiceExtractor invoiceExtractor;
 
    @Before
    public void setup() {
-      invoiceExtractor = new ITextPdfInvoiceExtractor();
+      invoiceExtractor = new ITextInvoiceExtractor();
    }
 
    @Test
-   public void extractByteArray() throws Exception {
-      //setup
-      URL resource = getClass().getResource(PDF_INVOICE_LOCATION);
-      byte[] pdf = new byte[resource.openConnection().getContentLength()];
-      DataInputStream dataIs = new DataInputStream(resource.openStream());
-      dataIs.readFully(pdf);
-
-      //exec
-      Invoice invoice = invoiceExtractor.extract(pdf);
-
-      //validate
-      assertThat(invoice).isNotNull();
-      assertThat(invoice.getHeader().getInvoiceNumber()).isEqualTo("471102");
-   }
-
-   @Test
-   public void extractInputStream() {
+   public void extract() {
       //setup
       InputStream pdfStream = getClass().getResourceAsStream(PDF_INVOICE_LOCATION);
 
       //exec
-      Invoice invoice = invoiceExtractor.extract(pdfStream);
+      byte[] xmlInvoice = invoiceExtractor.extract(pdfStream);
 
       //very
-      assertThat(invoice).isNotNull();
-      assertThat(invoice.getHeader().getInvoiceNumber()).isEqualTo("471102");
+      assertThat(xmlInvoice).isNotNull();
+      assertThat(new String(xmlInvoice)).contains("471102");
    }
 
    @Test(expected = InvoiceExtractionError.class)

@@ -16,24 +16,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with Konik library.  If not, see <http://www.gnu.org/licenses/>.
  */
-package io.konik.benchmark;
+package io.konik.carriage.itext.benchmark;
 
-import static com.google.common.io.ByteStreams.toByteArray;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openjdk.jmh.annotations.Mode.Throughput;
 import static org.openjdk.jmh.annotations.Scope.Thread;
-import io.konik.InvoiceTransformer;
-import io.konik.itext.appender.ITextPdfInvoiceAppender;
-import io.konik.zugferd.Invoice;
+import io.konik.carriage.itext.ITextInvoiceAppender;
+import io.konik.harness.appender.DefaultAppendParameter;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
-import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Threads;
 import org.openjdk.jmh.runner.RunnerException;
@@ -45,33 +43,25 @@ import org.openjdk.jmh.runner.RunnerException;
 public class ITextPdfInvoiceAppenderBenchmark extends DefaultBenchmark {
 
   
-   private final InvoiceTransformer transformer = new InvoiceTransformer();
-   private final ITextPdfInvoiceAppender appender = new ITextPdfInvoiceAppender();
-   private byte[] pdf;
-   
+   private final ITextInvoiceAppender appender = new ITextInvoiceAppender();
 
-   @Setup
-   public void setup() throws IOException {
-     pdf = toByteArray(getClass().getResourceAsStream("/acme_invoice-42.pdf"));
+   private DefaultAppendParameter createParameter() {
+      InputStream inputStreamXml = getClass().getResourceAsStream("/ZUGFeRD-invoice.xml");
+      InputStream inputStreamPdf = getClass().getResourceAsStream("/acme_invoice-42.pdf");
+      OutputStream resultingPdf = new ByteArrayOutputStream();
+      DefaultAppendParameter parameter = new DefaultAppendParameter(inputStreamPdf, inputStreamXml, resultingPdf , "1.0", "BASIC");
+      return parameter;
    }
-
+   
    @Benchmark
-   public void append_witStreams() throws Exception {
-      Invoice invoice = transformer.toModel(getClass().getResourceAsStream("/ZUGFeRD-invoice.xml"));
-      appender.append(invoice, getClass().getResourceAsStream("/acme_invoice-42.pdf"), new ByteArrayOutputStream());
+   public void append() throws Exception {
+      appender.append(createParameter());
    }
-   
+
    @Benchmark
    @Threads(4)
-   public void append_witStreamsAndThreads() throws Exception {
-      Invoice invoice = transformer.toModel(getClass().getResourceAsStream("/ZUGFeRD-invoice.xml"));
-      appender.append(invoice, getClass().getResourceAsStream("/acme_invoice-42.pdf"), new ByteArrayOutputStream());
-   }
-   
-   @Benchmark
-   public void append_withByteArray() throws Exception {
-      Invoice invoice = transformer.toModel(getClass().getResourceAsStream("/ZUGFeRD-invoice.xml"));
-      appender.append(invoice, pdf);
+   public void append_threaded() throws Exception {
+      appender.append(createParameter());
    }
    
    @Test

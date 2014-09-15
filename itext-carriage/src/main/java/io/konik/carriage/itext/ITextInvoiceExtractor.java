@@ -15,15 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with the Konik library. If not, see <http://www.gnu.org/licenses/>.
  */
-package io.konik.itext.extractor;
+package io.konik.carriage.itext;
 
 import static com.itextpdf.text.pdf.PdfName.EF;
 import static com.itextpdf.text.pdf.PdfName.F;
 import static com.itextpdf.text.pdf.PdfReader.getStreamBytes;
-import static javax.xml.bind.JAXBContext.newInstance;
-import io.konik.harness.InvoiceExtractionError;
-import io.konik.harness.InvoiceExtractor;
-import io.konik.zugferd.Invoice;
+import io.konik.harness.FileExtractor;
+import io.konik.harness.exception.InvoiceExtractionError;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -31,11 +29,6 @@ import java.io.InputStream;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
 
 import com.itextpdf.text.pdf.PRStream;
 import com.itextpdf.text.pdf.PdfArray;
@@ -46,46 +39,30 @@ import com.itextpdf.text.pdf.PdfStream;
 
 /**
  * The Class iText Pdf Invoice Extractor.
- * 
  */
 @Named
 @Singleton
-public class ITextPdfInvoiceExtractor implements InvoiceExtractor {
+public class ITextInvoiceExtractor implements FileExtractor {
 
-   private final static PdfName AF = new PdfName("AF");
+   private static final PdfName AF = new PdfName("AF");
 
    @Override
-   public Invoice extract(byte[] pdfIn) {
-      return extract(new ByteArrayInputStream(pdfIn));
+   public byte[] extract(InputStream pdfInput) {
+      
+      PdfReader reader = getPdfReader(pdfInput);
+      PdfArray af = getValidAf(reader.getCatalog());
+      PdfDictionary fileSpec = getValidFileSpec(af); 
+      PdfDictionary ef = getValidEf(fileSpec);
+      return getFStream(ef);
    }
    
    @Override
-   public Invoice extract(InputStream pdfStream) {
-         PdfReader reader = getPdfReader(pdfStream);
-         PdfArray af = getValidAf(reader.getCatalog());
-         PdfDictionary fileSpec = getValidFileSpec(af); 
-         PdfDictionary ef = getValidEf(fileSpec);
-         byte[] invoiceXmlContent = getFStream(ef);
-         return covertToObjectModel(invoiceXmlContent);
+   public InputStream extractToStream(InputStream pdfInput) {
+     return new ByteArrayInputStream(extract(pdfInput));
    }
    
-   
 
-   /**
-    * Extract invoice from PDF ot XMl byte Array
-    *
-    * @param pdfStream the pdf stream
-    * @return the byte[] of the xml ivoice contetn.
-    */
-   public byte[] extractPlain(InputStream pdfStream) {
-         PdfReader reader = getPdfReader(pdfStream);
-         PdfArray af = getValidAf(reader.getCatalog());
-         PdfDictionary fileSpec = getValidFileSpec(af); 
-         PdfDictionary ef = getValidEf(fileSpec);
-         return getFStream(ef);
-   }
-
-   private PdfReader getPdfReader(InputStream pdfStream) {
+   private static PdfReader getPdfReader(InputStream pdfStream) {
       try {
          return new PdfReader(pdfStream);
       } catch (IOException e) {
@@ -93,30 +70,31 @@ public class ITextPdfInvoiceExtractor implements InvoiceExtractor {
       }
    }
 
-   private PdfArray getValidAf(PdfDictionary catalog) {
+   private static PdfArray getValidAf(PdfDictionary catalog) {
       if (catalog.contains(AF)) {
          PdfArray af = catalog.getAsArray(AF);
-         if (!af.isEmpty() && af.getDirectObject(0).isDictionary())
+         if (!af.isEmpty() && af.getDirectObject(0).isDictionary()) {
             return af;
+         }
       }
       throw new InvoiceExtractionError("Pdf catalog does not contain Valid AF Entry");
    }
    
-   private PdfDictionary getValidFileSpec(PdfArray af) {
+   private static PdfDictionary getValidFileSpec(PdfArray af) {
       if (af.isEmpty() || af.getAsDict(0) == null) {
          throw new InvoiceExtractionError("Pdf does not contain a FileSpec Entry");
       }
       return af.getAsDict(0);
    }
    
-   private PdfDictionary getValidEf(PdfDictionary fileSpec) {
+   private static PdfDictionary getValidEf(PdfDictionary fileSpec) {
       if (fileSpec.contains(EF)) {
          return fileSpec.getAsDict(EF);
       }
       throw new InvoiceExtractionError("Pdf catalog does not contain Valid EF Entry");
    }
 
-   private byte[] getFStream(PdfDictionary ef){
+   private static byte[] getFStream(PdfDictionary ef){
       if (ef.contains(F)) {
          PdfStream xmlStream = ef.getAsStream(F);
          try {
@@ -127,15 +105,6 @@ public class ITextPdfInvoiceExtractor implements InvoiceExtractor {
       }
       throw new InvoiceExtractionError("Pdf catalog does not contain Valid F Entry");
    }
-   
-   static Invoice covertToObjectModel(byte[] xmlContent){
-      try {
-         Unmarshaller unmarshaller = newInstance("io.konik.zugferd").createUnmarshaller();
-         Source s = new StreamSource(new ByteArrayInputStream(xmlContent));
-         JAXBElement<Invoice> invoice = unmarshaller.unmarshal(s, Invoice.class);
-         return invoice.getValue();
-      } catch (JAXBException e) {
-         throw new InvoiceExtractionError("Could not read parse xml content",e);
-      }
-   }
+
+
 }

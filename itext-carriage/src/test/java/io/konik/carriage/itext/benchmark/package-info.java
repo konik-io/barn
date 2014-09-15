@@ -19,4 +19,4 @@
 /**
  * All benchmark related classes
  */
-package io.konik.benchmark;
+package io.konik.carriage.itext.benchmark;

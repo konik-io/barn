@@ -17,6 +17,6 @@
  * along with Konik library.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Does all the XMP stuff here for iText 
+ * The package containing the  appender and extractor.
  */
-package io.konik.itext.xmp;
+package io.konik.carriage.itext;
