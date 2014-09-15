@@ -21,8 +21,8 @@
    <inceptionYear>2014</inceptionYear>
 
    <modules>
-      <module>konik</module>
-      <module>itext-carriage</module>
+      
+      
       <module>distribution</module>
    </modules>
 
