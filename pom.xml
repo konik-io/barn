@@ -20,13 +20,6 @@
    <url>http://konik.io</url>
    <inceptionYear>2014</inceptionYear>
 
-   <modules>
-      <module>konik</module>
-      <module>itext-carriage</module>
-      <module>distribution</module>
-   </modules>
-
-
    <licenses>
       <license>
          <name>AGPL</name>
@@ -265,7 +258,7 @@
             <artifactId>license-maven-plugin</artifactId>
             <version>2.6</version>
             <configuration>
-               <header>../project/license/license-file-header.txt</header>
+<!--                <header>../project/license/license-file-header.txt</header> -->
                <mapping>
                   <java>SLASHSTAR_STYLE</java>
                </mapping>
@@ -317,7 +310,7 @@
          <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>17.0</version>
+            <version>18.0</version>
             <scope>test</scope>
          </dependency>
          <dependency>
@@ -330,13 +323,13 @@
          <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-core</artifactId>
-            <version>0.9.7</version>
+            <version>1.1</version>
             <scope>provided</scope>
          </dependency>
          <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-generator-annprocess</artifactId>
-            <version>0.9.7</version>
+            <version>1.1</version>
             <scope>provided</scope>
          </dependency>
       </dependencies>
