@@ -7,8 +7,16 @@
    <parent>
       <groupId>io.konik</groupId>
       <artifactId>parent</artifactId>
-      <version>0.8.0-SNAPSHOT</version>
+      <version>0.8.0</version>
    </parent>
+
+
+   <properties>
+      <konik-latest-release>0.8.2</konik-latest-release>
+      <itext-carriage-latest-release>0.8.0</itext-carriage-latest-release>
+      <pdfbox-carriage-latest-release>0.8.3</pdfbox-carriage-latest-release>
+      <harness-latest-release>0.8.0</harness-latest-release>
+   </properties>
 
    <build>
       <plugins>
@@ -30,6 +38,63 @@
                </execution>
             </executions>
          </plugin>
+
+         <!-- Set Properties with latest versions - javadocs-latest-version - javadocs-snapshot-version -->
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>versions-maven-plugin</artifactId>
+            <version>2.1</version>
+            <executions>
+               <execution>
+                  <id>find_latest_release_versions_in_central_build</id>
+                  <phase>initialize</phase>
+                  <goals>
+                     <goal>update-properties</goal>
+                  </goals>
+                  <configuration>
+                     <allowSnapshots>false</allowSnapshots>
+                     <properties>
+                        <property>
+                           <name>konik-latest-release</name>
+                           <dependencies>
+                              <dependency>
+                                 <groupId>io.konik</groupId>
+                                 <artifactId>konik</artifactId>
+                              </dependency>
+                           </dependencies>
+                        </property>
+                        <property>
+                           <name>pdfbox-carriage-latest-release</name>
+                           <dependencies>
+                              <dependency>
+                                 <groupId>io.konik</groupId>
+                                 <artifactId>pdfbox-carriage</artifactId>
+                              </dependency>
+                           </dependencies>
+                        </property>
+                        <property>
+                           <name>itext-carriage-latest-release</name>
+                           <dependencies>
+                              <dependency>
+                                 <groupId>io.konik</groupId>
+                                 <artifactId>itext-carriage</artifactId>
+                              </dependency>
+                           </dependencies>
+                        </property>
+                        <property>
+                           <name>harness-latest-release</name>
+                           <dependencies>
+                              <dependency>
+                                 <groupId>io.konik</groupId>
+                                 <artifactId>harness</artifactId>
+                              </dependency>
+                           </dependencies>
+                        </property>
+                     </properties>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
       </plugins>
    </build>
 
@@ -38,24 +103,29 @@
       <dependency>
          <groupId>io.konik</groupId>
          <artifactId>konik</artifactId>
-         <version>0.8.1</version>
+         <version>${konik-latest-release}</version>
       </dependency>
       <dependency>
          <groupId>io.konik</groupId>
          <artifactId>itext-carriage</artifactId>
-         <version>0.8.0</version>
+         <version>${itext-carriage-latest-release}</version>
       </dependency>
       <dependency>
          <groupId>io.konik</groupId>
          <artifactId>pdfbox-carriage</artifactId>
-         <version>0.8.2</version>
+         <version>${pdfbox-carriage-latest-release}</version>
+      </dependency>
+      <dependency>
+         <groupId>io.konik</groupId>
+         <artifactId>harness</artifactId>
+         <version>${harness-latest-release}</version>
       </dependency>
 
       <!-- sources -->
       <dependency>
          <groupId>io.konik</groupId>
          <artifactId>konik</artifactId>
-         <version>0.8.1</version>
+         <version>${konik-latest-release}</version>
          <classifier>sources</classifier>
       </dependency>
       <dependency>
@@ -67,7 +137,13 @@
       <dependency>
          <groupId>io.konik</groupId>
          <artifactId>pdfbox-carriage</artifactId>
-         <version>0.8.2</version>
+         <version>0.8.3</version>
+         <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+         <groupId>io.konik</groupId>
+         <artifactId>harness</artifactId>
+         <version>${harness-latest-release}</version>
          <classifier>sources</classifier>
       </dependency>
 
@@ -75,7 +151,7 @@
       <dependency>
          <groupId>io.konik</groupId>
          <artifactId>konik</artifactId>
-         <version>0.8.1</version>
+         <version>${konik-latest-release}</version>
          <classifier>javadoc</classifier>
       </dependency>
       <dependency>
@@ -90,6 +166,12 @@
          <version>0.8.2</version>
          <classifier>javadoc</classifier>
       </dependency>
-
+      <dependency>
+         <groupId>io.konik</groupId>
+         <artifactId>harness</artifactId>
+         <version>${harness-latest-release}</version>
+         <classifier>javadoc</classifier>
+      </dependency>
    </dependencies>
+   <version>0.8.3-SNAPSHOT</version>
 </project>
